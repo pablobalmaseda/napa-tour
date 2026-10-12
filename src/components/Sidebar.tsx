@@ -22,7 +22,8 @@ import {
   BookOpen,
   Monitor,
   LayoutGrid,
-  Columns
+  Columns,
+  Sun
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -369,8 +370,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
           </div>
 
-          {/* Tab Content Display Area (Zero-Scroll & Large TV Readability) */}
-          <div className="flex-1 flex flex-col justify-center overflow-hidden">
+          {/* Tab Content Display Area (Natural Fit with Smooth Scroll fallback) */}
+          <div className="flex-1 overflow-y-auto pr-1">
             {/* Tab 1: Story & Terroir */}
             {activeTab === 'story' && (
               <div className="space-y-3.5 animate-in fade-in duration-200">
@@ -378,8 +379,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <WineryLogo producerCode={currentSlide.producerCode} className="h-12 w-auto" />
                 </div>
 
+                {/* Vintage Climate & Weather Card */}
+                {currentSlide.vintageWeather && (
+                  <div className="bg-[#141822]/95 border border-[#d4af37]/35 rounded-xl p-3.5 shadow-md">
+                    <div className="flex items-center gap-1.5 text-xs text-[#fae8b4] font-cinzel font-semibold tracking-wider uppercase mb-1">
+                      <Sun className="w-3.5 h-3.5 text-[#d4af37]" />
+                      <span>Vintage Climate &amp; Growing Season</span>
+                    </div>
+                    <p className="text-xs sm:text-sm text-gray-200 font-sans-clean leading-relaxed">
+                      {currentSlide.vintageWeather}
+                    </p>
+                  </div>
+                )}
+
                 <div className="bg-[#13161e] border-l-2 border-[#d4af37] rounded-r-lg p-3.5 shadow-md">
-                  <p className="text-gray-200 text-sm sm:text-base leading-relaxed font-sans-clean font-light tracking-wide line-clamp-5">
+                  <p className="text-gray-200 text-sm sm:text-base leading-relaxed font-sans-clean font-light tracking-wide">
                     {currentSlide.story}
                   </p>
                 </div>
@@ -521,6 +535,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {currentSlide.story}
             </p>
           </div>
+
+          {/* Vintage Growing Season & Climate Weather Card */}
+          {currentSlide.vintageWeather && (
+            <div className="bg-[#141822]/95 border border-[#d4af37]/35 rounded-lg p-4 shadow-md">
+              <div className="flex items-center gap-1.5 text-xs text-[#fae8b4] font-cinzel font-semibold tracking-wider uppercase mb-1.5">
+                <Sun className="w-3.5 h-3.5 text-[#d4af37]" />
+                <span>Vintage Climate &amp; Growing Season</span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-200 font-sans-clean leading-relaxed">
+                {currentSlide.vintageWeather}
+              </p>
+            </div>
+          )}
 
           {/* Terroir & Viticulture Attributes Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">

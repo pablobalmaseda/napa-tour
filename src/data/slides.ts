@@ -40,6 +40,7 @@ export interface WineSlide {
   tastingNotes?: string[];
   foodPairing?: string;
   pairsWellWith?: string;
+  vintageWeather?: string;
   producerCode: string;
   imageUrl: string;
   imageCaption: string;
@@ -68,6 +69,7 @@ export const slides: WineSlide[] = [
     soil: "33 distinct soil series across Napa & Russian River",
     hintsOf: "A curated tasting flight tracing elevation, fog corridors, and soil geology across seven distinctive expressions.",
     tastingNotes: ["Elevation Gradient", "Marine Fog Intrusion", "Volcanic Benchlands", "Ancient Heritage Vines"],
+    vintageWeather: "Napa Valley Climate Dynamics: A rare Mediterranean climate (less than 0.1% of earth's surface). Marine fog from San Pablo Bay pools in low basins, creating up to 15°F temperature divergence from cool Carneros in the south to sun-drenched Calistoga in the north.",
     producerCode: "NAPA",
     imageUrl: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Napa Valley Benchlands & Rolling Estate Vineyards",
@@ -121,8 +123,9 @@ export const slides: WineSlide[] = [
     soil: "Rhyolitic volcanic ash, sandstone & marine tufa",
     hintsOf: "Aromas of green apple, lemon zest, and pear are layered with notes of brioche, toasted almond, and citrus blossom.",
     tastingNotes: ["Green Apple", "Lemon Zest", "Pear", "Brioche", "Toasted Almond", "Citrus Blossom"],
-    foodPairing: "Caviar and Creme freshe on potato chip || [Caramelized Onion, Apple and Goat Cheese Melts](https://cooking.nytimes.com/recipes/1021491-caramelized-onion-apple-and-goat-cheese-melts?eafs_enabled=false)",
+    foodPairing: "Caviar and Creme fraîche on potato chip || Caramelized Onion, Apple and Goat Cheese Melts",
     pairsWellWith: "Seafood, oysters, fried foods, or soft cheeses.",
+    vintageWeather: "2022 Growing Season: A warm, dynamic vintage marked by an intense early September heatwave. Harvest for Schramsberg's sparkling Chardonnay was completed in late August just days before peak heat, capturing pristine natural acidity, bright citrus energy, and fresh orchard fruit before sugars surged.",
     producerCode: "SCHR",
     imageUrl: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Historic 1870 Hand-Hewn Volcanic Aging Caves at Diamond Mountain",
@@ -179,8 +182,9 @@ export const slides: WineSlide[] = [
     soil: "Alluvial gravelly sandy loam along the Russian River",
     hintsOf: "Meyer lemon, white peach, passionfruit, and fresh grapefruit zest, backed by a clean, refreshing minerality.",
     tastingNotes: ["Meyer Lemon", "White Peach", "Passionfruit", "Grapefruit Zest", "Clean Minerality"],
-    foodPairing: "Potato Leek Soup either of these https://www.simplyrecipes.com/recipes/potato_leek_soup/ (we have tried this one before/lactose free) or https://cooking.nytimes.com/recipes/1025764-potato-leek-soup (haven’t tried this one before)",
+    foodPairing: "Potato Leek Soup",
     pairsWellWith: "Delicate vegetable soups, fresh green herbs, goat cheese, light flaky white fish, and bright vinaigrettes.",
+    vintageWeather: "2023 Growing Season: Hailed across Sonoma and Napa as a 'vintage of the century.' Historic winter atmospheric rivers replenished deep water tables, followed by a remarkably cool, mild summer without heat spikes. Extended hang-time yielded electric natural acidity, vibrant passionfruit, and crisp mineral balance.",
     producerCode: "GRAC",
     imageUrl: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Gracianna Winery Estate along Westside Road in Russian River Valley",
@@ -236,6 +240,7 @@ export const slides: WineSlide[] = [
     tastingNotes: ["Blackberry", "Black Cherry", "Licorice", "Baking Spices", "Black Pepper", "Dried Herbs"],
     foodPairing: "Pepperoni pizza",
     pairsWellWith: "Wood-fired pizzas, sweet-and-sour glazed meats, BBQ pork, and bold, smoked cheeses.",
+    vintageWeather: "2023 Growing Season: A cool, delayed 'unicorn vintage.' Record winter rains allowed 80+ year-old heritage vines to thrive without drought stress. A mild summer pushed harvest nearly a month later than usual, producing concentrated Zinfandel with silky tannins, peppery spice, and remarkable fresh acidity.",
     producerCode: "TURL",
     imageUrl: "https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Gnarled 80+ Year-Old Heritage Vines in St. Helena Alluvial Soil",
@@ -293,6 +298,7 @@ export const slides: WineSlide[] = [
     tastingNotes: ["Pomegranate", "Bright Citrus Zest", "Earthy Cacao", "Finely Woven Tannins"],
     foodPairing: "Arugula salad with blue cheese and pine nuts in a lemon vinaigrette.",
     pairsWellWith: "Roasted lamb, rosemary-rubbed steaks, earthy root vegetable gratins, and hard aged cheeses.",
+    vintageWeather: "2023 Growing Season: Christian Moueix praised 2023 as one of the finest harvests of his 50-year career. Abundant winter rains nourished the dry-farmed soils. An unusually mild summer delayed harvest into late October, allowing fruit to ripen at a leisurely pace—yielding savory depth, cacao, and chiseled, polished tannins.",
     producerCode: "DOMN",
     imageUrl: "https://images.unsplash.com/photo-1585553616435-2dc0a54e271d?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Dominus Napanook Estate & Dry-Farmed Historic Vines in Yountville",
@@ -348,6 +354,7 @@ export const slides: WineSlide[] = [
     tastingNotes: ["Ripe Blackberry", "Dark Cherry", "Layered Spice", "Cedar", "Cocoa"],
     foodPairing: "Beef and Pork meatballs in a blackberry reduction",
     pairsWellWith: "Roasted poultry, savory umami-focused dishes, grilled flank steak, and medium-aged cheeses like Fontina.",
+    vintageWeather: "2022 Growing Season: Dry winter followed by a temperate summer and an intense 10-day Labor Day heat dome exceeding 110°F. Stags Leap District was saved by daily cooling marine breezes funneled from San Pablo Bay, preserving balancing acidity beneath plush, concentrated dark berry fruit.",
     producerCode: "SLWC",
     imageUrl: "https://images.unsplash.com/photo-1504279577054-acfeccf8fc52?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Stags Leap Wine Cellars Estate & Barrel Caves",
@@ -401,8 +408,9 @@ export const slides: WineSlide[] = [
     soil: "Weathered andesite volcanic rock & fractured rhyolite",
     hintsOf: "Layers of blackberry, raspberry, and black licorice, complemented by notes of bay leaf, sage, cinnamon, clove, and dark chocolate with velvety tannins",
     tastingNotes: ["Blackberry", "Raspberry", "Black Licorice", "Bay Leaf & Sage", "Cinnamon & Clove", "Dark Chocolate"],
-    foodPairing: "Short Rib [Ragu](https://www.joshuaweissman.com/recipes/best-short-rib-ragu-pasta-recipe)",
+    foodPairing: "Short Rib Ragu",
     pairsWellWith: "Short ribs, heavily seared ribeye, rich demi-glace sauces, and intense blue cheeses.",
+    vintageWeather: "2023 Growing Season: A near-mythic growing season on Shafer's hillside amphitheater. Steady winter rainfall gave vines vigor, followed by mild summer sun and cool nights. Unprecedented long hang-time into late autumn allowed hillside grapes to achieve complete phenolic ripeness, packing blackberry concentration and velvety tannins.",
     producerCode: "SHAF",
     imageUrl: "https://images.unsplash.com/photo-1528823872057-9c018a7a7553?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "Shafer Vineyards Steep Hillside Terraces & Winery Facility",
@@ -458,6 +466,7 @@ export const slides: WineSlide[] = [
     tastingNotes: ["Crème de Cassis", "Red & Black Currants", "Black Raspberries", "Warm Plums", "Lavender & Sage", "Black Tea", "Wet Earth"],
     foodPairing: "Chocolate truffles",
     pairsWellWith: "Slow-braised beef ragù, heavy, rich pasta dishes, truffled sides, and slow-roasted, highly marbled meats.",
+    vintageWeather: "2016 Growing Season: Rated 98 points and universally regarded as a modern benchmark vintage for Napa Valley. Near-perfect conditions throughout: steady winter rain, uniform spring budbreak, and a mild, sunny summer without heatwaves gave Jean Hoefliger ideal hang-time. A decade of bottle age has softened this into pure velvet.",
     producerCode: "AXR",
     imageUrl: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80",
     imageCaption: "AXR Napa Valley — St. Helena Historic Estate",
