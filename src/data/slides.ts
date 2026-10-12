@@ -44,6 +44,7 @@ export interface WineSlide {
   producerCode: string;
   imageUrl: string;
   imageCaption: string;
+  gallery?: { url: string; caption: string }[];
   isOverview?: boolean;
   wineNumber?: number;
   winemaker?: string;
@@ -73,6 +74,11 @@ export const slides: WineSlide[] = [
     producerCode: "NAPA",
     imageUrl: "/wineries/napa.jpg",
     imageCaption: "Iconic Welcome to Napa Valley Sign & Rolling Estate Vineyards",
+    gallery: [
+      { url: "/wineries/napa.jpg", caption: "Iconic Welcome to Napa Valley Sign along Highway 29" },
+      { url: "/wineries/napa-2.jpg", caption: "Rolling Benchland Vineyards & Mayacamas Mountain Foothills" },
+      { url: "/wineries/napa-3.jpg", caption: "Sun-Drenched Napa Valley Floor Vines at Golden Hour" }
+    ],
     isOverview: true,
     winemaker: "Historic & Modern Cellar Masters",
     winemakerBio: "Showcasing the collective mastery of Napa & Sonoma’s premier historic vintners, each translating unique geologic microclimates into the glass.",
@@ -198,6 +204,11 @@ export const slides: WineSlide[] = [
     producerCode: "SCHR",
     imageUrl: "/wineries/schramsberg.jpg",
     imageCaption: "Historic 1870 Hand-Hewn Volcanic Aging Caves at Schramsberg",
+    gallery: [
+      { url: "/wineries/schramsberg.jpg", caption: "Historic 1870 Hand-Hewn Volcanic Aging Caves at Schramsberg" },
+      { url: "/wineries/schramsberg-2.jpg", caption: "Riddling Racks & Extended Lees Aging in Diamond Mountain Tunnels" },
+      { url: "/wineries/schramsberg-3.jpg", caption: "Traditional Method Brut Sparkling Service at the Estate" }
+    ],
     wineNumber: 1,
     winemaker: "Sean Thompson & Hugh Davies",
     winemakerBio: "Senior Winemaker Sean Thompson has directed sparkling production at Schramsberg for over 15 years, vinifying over 120 separate vineyard lots alongside second-generation vintner Hugh Davies.",
@@ -257,6 +268,11 @@ export const slides: WineSlide[] = [
     producerCode: "GRAC",
     imageUrl: "/wineries/gracianna.jpg",
     imageCaption: "Gracianna Winery Estate along Westside Road in Russian River Valley",
+    gallery: [
+      { url: "/wineries/gracianna.jpg", caption: "Gracianna Winery Estate along Westside Road in Russian River Valley" },
+      { url: "/wineries/gracianna-2.jpg", caption: "Gracianna Tasting Room Entrance on the 'Miracle Mile' in Healdsburg" },
+      { url: "/wineries/gracianna-3.jpg", caption: "Family-Owned Estate Grounds & Riverblock Vineyard" }
+    ],
     wineNumber: 2,
     winemaker: "Trini Amador",
     winemakerBio: "Estate founder and winemaker Trini Amador crafts boutique, small-lot wines along famous Westside Road in Healdsburg, driven by gratitude and ancestral French-Basque tradition.",
@@ -313,6 +329,11 @@ export const slides: WineSlide[] = [
     producerCode: "TURL",
     imageUrl: "/wineries/turley.jpg",
     imageCaption: "Turley Wine Cellars Estate & 80+ Year-Old Heritage Vines in St. Helena",
+    gallery: [
+      { url: "/wineries/turley.jpg", caption: "Turley Wine Cellars Estate & 80+ Year-Old Heritage Vines in St. Helena" },
+      { url: "/wineries/turley-2.jpg", caption: "Ancient Head-Trained Heritage Bush Vines Preserved by Turley" },
+      { url: "/wineries/turley-3.jpg", caption: "Tasting Old Vine Zinfandel in the St. Helena Cellar" }
+    ],
     wineNumber: 3,
     winemaker: "Tegan Passalacqua",
     winemakerBio: "Head Winemaker and Vineyard Director Tegan Passalacqua is a legendary viticulturist and co-founder of the Historic Vineyard Society, dedicated to preserving California's pre-Prohibition vines.",
@@ -371,6 +392,11 @@ export const slides: WineSlide[] = [
     producerCode: "DOMN",
     imageUrl: "/wineries/dominus.jpg",
     imageCaption: "Dominus Napanook Estate & Dry-Farmed Historic Vines in Yountville",
+    gallery: [
+      { url: "/wineries/dominus.jpg", caption: "Dominus Estate & Herzog & de Meuron Basalt Gabion Winery in Yountville" },
+      { url: "/wineries/dominus-2.jpg", caption: "Historic Napanook Vineyard Beneath the Mayacamas Mountains" },
+      { url: "/wineries/dominus-3.jpg", caption: "Official Napanook Vineyard Parcel & Soil Zone Map (Est. 1838)" }
+    ],
     wineNumber: 4,
     winemaker: "Christian Moueix & Tod Mostero",
     winemakerBio: "Bordeaux legend Christian Moueix (Château Pétrus) and Director of Viticulture Tod Mostero apply 100% dry-farming and French classical rigor to Napa's oldest historic vineyard.",
@@ -427,6 +453,11 @@ export const slides: WineSlide[] = [
     producerCode: "SLWC",
     imageUrl: "/wineries/stagsleap.jpg",
     imageCaption: "Stag's Leap Wine Cellars Estate & Vineyard Table in Stags Leap District",
+    gallery: [
+      { url: "/wineries/stagsleap.jpg", caption: "Stag's Leap Wine Cellars Estate & Vineyard Table in Stags Leap District" },
+      { url: "/wineries/stagsleap-2.jpg", caption: "Historic S.L.V. & FAY Vineyards Beneath the Volcanic Stags Leap Palisades" },
+      { url: "/wineries/stagsleap-3.jpg", caption: "Overlooking the Estate Vineyards from the FAY Outlook Visitor Center" }
+    ],
     wineNumber: 5,
     winemaker: "Marcus Notaro",
     winemakerBio: "Winemaker Marcus Notaro leads Stag’s Leap Wine Cellars with two decades of mastery, continuing the legacy that stunned the wine world at the 1976 Judgment of Paris.",
@@ -483,6 +514,11 @@ export const slides: WineSlide[] = [
     producerCode: "SHAF",
     imageUrl: "/wineries/shafer.jpg",
     imageCaption: "Shafer Vineyards Steep Hillside Terraces & Winery Facility",
+    gallery: [
+      { url: "/wineries/shafer.jpg", caption: "Shafer Vineyards Steep Hillside Amphitheater in Stags Leap District" },
+      { url: "/wineries/shafer-2.jpg", caption: "Sun-Drenched Volcanic Knolls Surrounding the Shafer Winery" },
+      { url: "/wineries/shafer-3.jpg", caption: "Private Collector Tasting Salon Overlooking Hillside Select Blocks" }
+    ],
     wineNumber: 6,
     winemaker: "Elias Fernandez & Doug Shafer",
     winemakerBio: "Winemaker Elias Fernandez has directed Shafer’s winemaking for four decades (Food & Wine Winemaker of the Year), working alongside late founder John Shafer and former president Doug Shafer.",
@@ -539,6 +575,11 @@ export const slides: WineSlide[] = [
     producerCode: "AXR",
     imageUrl: "/wineries/axr.jpg",
     imageCaption: "AXR Napa Valley — Historic 1880s Victorian Estate & Redwoods in St. Helena",
+    gallery: [
+      { url: "/wineries/axr.jpg", caption: "AXR Napa Valley — Historic 1880s Victorian Estate & Redwoods in St. Helena" },
+      { url: "/wineries/axr-2.jpg", caption: "Estate Cabernet Vineyard Rows Bordering Ancient St. Helena Redwoods" },
+      { url: "/wineries/axr-3.jpg", caption: "The Historic Pre-Prohibition Manor House & Speakeasy Grounds at AXR" }
+    ],
     wineNumber: 7,
     winemaker: "Jean Hoefliger",
     winemakerBio: "Swiss-born cult winemaker Jean Hoefliger (former winemaker of Alpha Omega, Newton, and Château Lynch-Bages) is famous for crafting hedonistic, ultra-opulent, seamless Napa Cabernets.",

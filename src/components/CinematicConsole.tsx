@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { WineSlide } from '../data/slides';
 import type { LayoutMode, PresentationTabId } from '../types/presentation';
 import { WineryLogo } from './WineryLogo';
+import { WineryCarousel } from './WineryCarousel';
 import { cleanFoodPairingText } from '../utils/textUtils';
 import { 
   ChevronLeft, 
@@ -233,16 +234,11 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
             </div>
 
             {currentSlide.producerCode !== 'TASTE' && (
-              <div className="relative h-56 w-full rounded-xl overflow-hidden border border-[#d4af37]/30">
-                <img
-                  src={currentSlide.imageUrl}
-                  alt={currentSlide.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2.5">
-                  <p className="text-xs text-[#fae8b4] font-sans-clean">{currentSlide.imageCaption}</p>
-                </div>
-              </div>
+              <WineryCarousel
+                slide={currentSlide}
+                heightClass="h-56"
+                logoHeightClass="h-8"
+              />
             )}
 
             {currentSlide.vintageWeather && (
