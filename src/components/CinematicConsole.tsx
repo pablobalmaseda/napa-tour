@@ -106,8 +106,21 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
             </div>
           </div>
 
-          {/* Middle: Title & Winery Logo */}
-          <div className="py-2.5 flex items-start justify-between gap-3">
+          {/* Middle: Title, Winery Photo Thumbnail & Winery Logo */}
+          <div className="py-2.5 flex items-center justify-between gap-3">
+            {currentSlide.producerCode !== 'TASTE' && (
+              <div
+                onClick={() => setShowFullStory(true)}
+                className="w-16 h-12 rounded-lg overflow-hidden border border-[#d4af37]/40 shrink-0 cursor-pointer group relative"
+                title="Click to view estate photo & full story"
+              >
+                <img
+                  src={currentSlide.imageUrl}
+                  alt={currentSlide.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <h2 className="font-serif-luxury text-xl sm:text-2xl text-white font-normal leading-tight tracking-tight truncate">
                 {currentSlide.title}
@@ -166,7 +179,7 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
               className="text-[11px] font-cinzel text-[#d4af37] hover:text-[#fae8b4] flex items-center gap-1 transition-colors"
             >
               <BookOpen className="w-3 h-3" />
-              <span>{currentSlide.producerCode === 'TASTE' ? 'Full 5 S Guide' : 'Full Winemaker Story'}</span>
+              <span>{currentSlide.producerCode === 'TASTE' ? 'Full 5 S Guide' : 'Estate Photo & Story'}</span>
             </button>
 
             <div className="flex items-center gap-1.5">
@@ -203,10 +216,10 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
       {/* Full Winemaker Story Modal (Fades in over map when requested) */}
       {showFullStory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative bg-[#0e1119] border border-[#d4af37]/40 rounded-2xl max-w-2xl w-full p-6 shadow-2xl text-gray-200 space-y-4">
+          <div className="relative bg-[#0e1119] border border-[#d4af37]/40 rounded-2xl max-w-2xl w-full p-6 shadow-2xl text-gray-200 space-y-4 max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowFullStory(false)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg bg-[#181d28] border border-[#2b3548] text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 z-10 p-1.5 rounded-lg bg-[#181d28] border border-[#2b3548] text-gray-400 hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -218,6 +231,19 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
                 <p className="text-xs font-cinzel text-[#fae8b4]">{currentSlide.subtitle} • {currentSlide.region}</p>
               </div>
             </div>
+
+            {currentSlide.producerCode !== 'TASTE' && (
+              <div className="relative h-56 w-full rounded-xl overflow-hidden border border-[#d4af37]/30">
+                <img
+                  src={currentSlide.imageUrl}
+                  alt={currentSlide.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2.5">
+                  <p className="text-xs text-[#fae8b4] font-sans-clean">{currentSlide.imageCaption}</p>
+                </div>
+              </div>
+            )}
 
             {currentSlide.vintageWeather && (
               <div className="bg-[#141822] border border-[#d4af37]/30 rounded-xl p-3.5">

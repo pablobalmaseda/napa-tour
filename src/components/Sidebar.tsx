@@ -23,7 +23,9 @@ import {
   Monitor,
   LayoutGrid,
   Columns,
-  Sun
+  Sun,
+  Maximize2,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -124,6 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const currentSlide = slides[currentSlideIndex];
   const [isPlaying, setIsPlaying] = useState(false);
   const [showFlightMenu, setShowFlightMenu] = useState(false);
+  const [showPhotoLightbox, setShowPhotoLightbox] = useState(false);
 
   // Autoplay presentation timer (9 seconds per stop)
   useEffect(() => {
@@ -374,10 +377,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex-1 overflow-y-auto pr-1">
             {/* Tab 1: Story & Terroir */}
             {activeTab === 'story' && (
-              <div className="space-y-3.5 animate-in fade-in duration-200">
-                <div className="bg-gradient-to-b from-[#161a24] to-[#0e1117] border border-[#d4af37]/30 rounded-xl p-3 flex items-center justify-center shadow-lg">
-                  <WineryLogo producerCode={currentSlide.producerCode} className="h-12 w-auto" />
-                </div>
+              <div className="space-y-3 animate-in fade-in duration-200">
+                {currentSlide.producerCode === 'TASTE' ? (
+                  <div className="bg-gradient-to-b from-[#161a24] to-[#0e1117] border border-[#d4af37]/30 rounded-xl p-3 flex items-center justify-center shadow-lg">
+                    <WineryLogo producerCode={currentSlide.producerCode} className="h-12 w-auto" />
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => setShowPhotoLightbox(true)}
+                    className="group relative h-32 sm:h-36 w-full rounded-xl overflow-hidden border border-[#d4af37]/40 shadow-lg cursor-pointer bg-[#121620]"
+                    title="Click to enlarge winery estate photo"
+                  >
+                    <img
+                      src={currentSlide.imageUrl}
+                      alt={currentSlide.title}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e14] via-[#0b0e14]/25 to-transparent" />
+                    <div className="absolute top-2 left-2 bg-[#0e1118]/85 backdrop-blur-md border border-[#d4af37]/40 rounded-lg px-2.5 py-1 shadow-md">
+                      <WineryLogo producerCode={currentSlide.producerCode} className="h-7 w-auto" />
+                    </div>
+                    <div className="absolute top-2 right-2 p-1.5 rounded-lg bg-[#0e1118]/80 backdrop-blur-md border border-white/15 text-gray-200 group-hover:text-[#d4af37] group-hover:border-[#d4af37]/50 transition-colors">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                      <p className="text-[11px] text-[#fae8b4] font-sans-clean font-medium truncate drop-shadow">
+                        {currentSlide.imageCaption}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* Vintage Climate & Weather Card (or See & Swirl on TASTE slide) */}
                 {currentSlide.vintageWeather && (
@@ -529,11 +558,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          {/* Winery Estate Logo Plaque */}
-          <div className="relative rounded-xl overflow-hidden border border-[#d4af37]/30 shadow-2xl bg-gradient-to-b from-[#161a24] to-[#0e1117] py-6 px-4 flex flex-col items-center justify-center">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#d4af37]/10 via-transparent to-transparent pointer-events-none" />
-            <WineryLogo producerCode={currentSlide.producerCode} className="h-16 w-auto" />
-          </div>
+          {/* Winery Estate Photo & Logo Plaque */}
+          {currentSlide.producerCode === 'TASTE' ? (
+            <div className="relative rounded-xl overflow-hidden border border-[#d4af37]/30 shadow-2xl bg-gradient-to-b from-[#161a24] to-[#0e1117] py-6 px-4 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#d4af37]/10 via-transparent to-transparent pointer-events-none" />
+              <WineryLogo producerCode={currentSlide.producerCode} className="h-16 w-auto" />
+            </div>
+          ) : (
+            <div
+              onClick={() => setShowPhotoLightbox(true)}
+              className="group relative h-48 sm:h-52 w-full rounded-xl overflow-hidden border border-[#d4af37]/40 shadow-2xl cursor-pointer bg-[#121620]"
+              title="Click to enlarge winery estate photo"
+            >
+              <img
+                src={currentSlide.imageUrl}
+                alt={currentSlide.title}
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e14] via-[#0b0e14]/20 to-transparent" />
+              <div className="absolute top-2.5 left-2.5 bg-[#0e1118]/85 backdrop-blur-md border border-[#d4af37]/40 rounded-lg px-3 py-1.5 shadow-lg">
+                <WineryLogo producerCode={currentSlide.producerCode} className="h-9 w-auto" />
+              </div>
+              <div className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-[#0e1118]/80 backdrop-blur-md border border-white/15 text-gray-200 group-hover:text-[#d4af37] group-hover:border-[#d4af37]/50 transition-colors">
+                <Maximize2 className="w-4 h-4" />
+              </div>
+              <div className="absolute bottom-2.5 left-3 right-3">
+                <p className="text-xs text-[#fae8b4] font-sans-clean font-medium truncate drop-shadow">
+                  {currentSlide.imageCaption}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Story Narrative Box */}
           <div className="relative bg-[#13161e] border-l-2 border-[#d4af37] rounded-r-lg p-4 sm:p-5 shadow-lg">
@@ -710,6 +765,45 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>View</span>
         </div>
       </footer>
+
+      {/* Fullscreen Winery Estate Photo Lightbox */}
+      {showPhotoLightbox && (
+        <div
+          onClick={() => setShowPhotoLightbox(false)}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-lg flex items-center justify-center p-6 animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-5xl w-full bg-[#0e1118] border border-[#d4af37]/50 rounded-2xl overflow-hidden shadow-2xl"
+          >
+            <button
+              onClick={() => setShowPhotoLightbox(false)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-xl bg-black/70 border border-white/20 text-gray-200 hover:text-[#d4af37] transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="relative max-h-[75vh] overflow-hidden bg-black flex items-center justify-center">
+              <img
+                src={currentSlide.imageUrl}
+                alt={currentSlide.title}
+                className="w-full max-h-[75vh] object-contain"
+              />
+            </div>
+            <div className="p-4 bg-[#0e1118] border-t border-[#222836] flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <WineryLogo producerCode={currentSlide.producerCode} className="h-9 w-auto" />
+                <div>
+                  <h3 className="font-serif-luxury text-lg text-white">{currentSlide.title}</h3>
+                  <p className="text-xs text-[#fae8b4] font-sans-clean">{currentSlide.imageCaption}</p>
+                </div>
+              </div>
+              <span className="text-xs font-cinzel text-gray-400 uppercase tracking-wider hidden sm:inline">
+                {currentSlide.region}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 };
