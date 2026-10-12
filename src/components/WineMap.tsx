@@ -4,6 +4,7 @@ import type { WineSlide } from '../data/slides';
 import { napaAvasGeoJSON } from '../data/napaAvas';
 import type { AvaFeatureProperties, AvaFeature } from '../data/napaAvas';
 import { getWineryLogoDataUri } from './WineryLogo';
+import { TastingSkyVisual } from './TastingSkyVisual';
 import { Layers, Maximize2, Compass, MapPin, Mountain, Thermometer } from 'lucide-react';
 
 interface WineMapProps {
@@ -265,6 +266,7 @@ export const WineMap: React.FC<WineMapProps> = ({
       zoom: initialSlide.zoom,
       pitch: initialSlide.pitch,
       bearing: initialSlide.bearing ?? 0,
+      maxPitch: 85,
       attributionControl: false
     });
 
@@ -438,13 +440,27 @@ export const WineMap: React.FC<WineMapProps> = ({
     }
   };
 
-  return (
-    <div className="relative w-full h-full bg-[#0a0c10] overflow-hidden">
-      {/* Map Container */}
-      <div ref={mapContainer} className="w-full h-full" />
+  const isTastingSkyMode = slides[currentSlideIndex]?.producerCode === 'TASTE';
 
-      {/* Floating Style & Control Badges */}
-      <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 max-w-[calc(100%-80px)]">
+  return (
+    <div className="relative w-full h-full bg-[#06080f] overflow-hidden">
+      {/* Map Container — smoothly pans down so camera looks up into the sky on the 5 S's slide */}
+      <div
+        ref={mapContainer}
+        className={`w-full h-full transition-transform duration-[2200ms] ease-out ${
+          isTastingSkyMode ? 'translate-y-[44%] scale-110' : 'translate-y-0 scale-100'
+        }`}
+      />
+
+      {/* The 5 S's of Wine Tasting Sky Visual (Rendered in the sky above the tilted Napa horizon) */}
+      {isTastingSkyMode && <TastingSkyVisual />}
+
+      {/* Floating Style & Control Badges (Hidden when looking up at the 5 S's sky visual) */}
+      <div
+        className={`absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 max-w-[calc(100%-80px)] transition-opacity duration-500 ${
+          isTastingSkyMode ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      >
         {/* Style Selector */}
         <div className="flex bg-[#12151d]/90 backdrop-blur-md rounded-lg p-1 border border-[#2a303c] shadow-2xl">
           <button
@@ -682,7 +698,11 @@ export const WineMap: React.FC<WineMapProps> = ({
       )}
 
       {/* Floating Coordinates Tag in bottom left of map */}
-      <div className="absolute bottom-4 left-4 z-20 pointer-events-none">
+      <div
+        className={`absolute bottom-4 left-4 z-20 pointer-events-none transition-opacity duration-500 ${
+          isTastingSkyMode ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
         <div className="bg-[#0e1118]/85 backdrop-blur-md border border-[#d4af37]/30 rounded-lg px-3 py-2 text-xs shadow-2xl flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-[#d4af37] animate-ping" />
           <div>
