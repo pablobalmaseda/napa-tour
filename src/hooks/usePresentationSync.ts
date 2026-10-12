@@ -69,20 +69,49 @@ function buildMqttPublish(topic: string, message: string, retain = false): Array
   return concatUint8([new Uint8Array([headerByte, ...encodeMqttLength(remLen)]), topicBuf, msgBuf]);
 }
 
-function parseMqttPublish(u8: Uint8Array): string | null {
-  if ((u8[0] & 0xf0) !== 0x30) return null;
-  let idx = 1;
-  while (idx < u8.length && (u8[idx++] & 128) !== 0) {
-    // skip remaining length bytes
+// Parse all MQTT packets in a WebSocket frame (handles concatenated CONNACK/SUBACK/PUBLISH frames)
+function parseMqttPackets(u8: Uint8Array): { hasConnAck: boolean; payloads: string[] } {
+  let hasConnAck = false;
+  const payloads: string[] = [];
+  let offset = 0;
+
+  while (offset < u8.length) {
+    const header = u8[offset];
+    const packetType = header & 0xf0;
+    let idx = offset + 1;
+    let remLen = 0;
+    let multiplier = 1;
+
+    while (idx < u8.length) {
+      const encodedByte = u8[idx++];
+      remLen += (encodedByte & 127) * multiplier;
+      multiplier *= 128;
+      if ((encodedByte & 128) === 0) break;
+    }
+
+    const packetEnd = idx + remLen;
+    if (packetEnd > u8.length) break;
+
+    if (packetType === 0x20) {
+      hasConnAck = true;
+    } else if (packetType === 0x30) {
+      let pIdx = idx;
+      if (pIdx + 2 <= packetEnd) {
+        const topicLen = (u8[pIdx] << 8) | u8[pIdx + 1];
+        pIdx += 2 + topicLen;
+        if ((header & 0x06) > 0) {
+          pIdx += 2; // QoS > 0 packet ID
+        }
+        if (pIdx <= packetEnd) {
+          payloads.push(new TextDecoder().decode(u8.slice(pIdx, packetEnd)));
+        }
+      }
+    }
+
+    offset = packetEnd;
   }
-  if (idx + 2 > u8.length) return null;
-  const topicLen = (u8[idx] << 8) | u8[idx + 1];
-  idx += 2 + topicLen;
-  if ((u8[0] & 0x06) > 0) {
-    idx += 2; // QoS > 0 packet identifier
-  }
-  if (idx > u8.length) return null;
-  return new TextDecoder().decode(u8.slice(idx));
+
+  return { hasConnAck, payloads };
 }
 
 export function getSyncRoomId(): string {
@@ -134,7 +163,6 @@ export function usePresentationSync(
     (data: SyncMessage) => {
       if (data.senderId && data.senderId !== senderIdRef.current) {
         seenPeersRef.current.set(data.senderId, Date.now());
-        // Clean up stale peers older than 45s
         const now = Date.now();
         for (const [peer, ts] of seenPeersRef.current.entries()) {
           if (now - ts > 45000) seenPeersRef.current.delete(peer);
@@ -206,7 +234,23 @@ export function usePresentationSync(
       }
     }
 
-    // 2. BroadcastChannel (same browser)
+    // 2. Local HTTP /api/sync-state (triggers Vite server broadcast even if mobile WS was asleep)
+    const host = window.location.hostname;
+    if (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host.startsWith('192.168.') ||
+      host.startsWith('10.') ||
+      host.startsWith('172.')
+    ) {
+      fetch('/api/sync-state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(stateMsg)
+      }).catch(() => {});
+    }
+
+    // 3. BroadcastChannel (same browser)
     if (broadcastChannelRef.current) {
       try {
         broadcastChannelRef.current.postMessage(stateMsg);
@@ -233,35 +277,25 @@ export function usePresentationSync(
     let reconnectTimeout: ReturnType<typeof setTimeout>;
     let keepAliveInterval: ReturnType<typeof setInterval>;
     let isUnmounted = false;
+    let activeWs: WebSocket | null = null;
 
     function connectCloud() {
       if (isUnmounted) return;
       try {
+        // Unique MQTT ClientID per socket instance so React StrictMode double-mount never collides
+        const mqttClientId = `${senderIdRef.current}_${Math.random().toString(36).slice(2, 7)}`;
         const ws = new WebSocket('wss://broker.emqx.io:8084/mqtt', 'mqtt');
         ws.binaryType = 'arraybuffer';
+        activeWs = ws;
         cloudSocketRef.current = ws;
 
         ws.onopen = () => {
-          if (isUnmounted) {
+          if (isUnmounted || cloudSocketRef.current !== ws) {
             ws.close();
             return;
           }
-          ws.send(buildMqttConnect(senderIdRef.current));
-          setTimeout(() => {
-            if (ws.readyState === WebSocket.OPEN) {
-              ws.send(buildMqttSubscribe(roomTopicRef.current));
-              setIsCloudConnected(true);
-              // Announce presence
-              const presenceMsg: SyncMessage = {
-                type: 'PING_PRESENCE',
-                senderId: senderIdRef.current,
-                timestamp: Date.now()
-              };
-              ws.send(buildMqttPublish(roomTopicRef.current, JSON.stringify(presenceMsg), false));
-            }
-          }, 120);
+          ws.send(buildMqttConnect(mqttClientId));
 
-          // MQTT KeepAlive Ping + Presence Heartbeat every 20s
           keepAliveInterval = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
               ws.send(new Uint8Array([0xc0, 0x00]).buffer); // MQTT PINGREQ
@@ -276,30 +310,47 @@ export function usePresentationSync(
         };
 
         ws.onmessage = (event) => {
-          if (!(event.data instanceof ArrayBuffer)) return;
+          if (isUnmounted || !(event.data instanceof ArrayBuffer)) return;
           const u8 = new Uint8Array(event.data);
-          const payloadStr = parseMqttPublish(u8);
-          if (!payloadStr) return;
-          try {
-            const data: SyncMessage = JSON.parse(payloadStr);
-            if (data.senderId === senderIdRef.current) return;
-            applyIncomingSync(data);
-          } catch {
-            // ignore malformed JSON
+          const { hasConnAck, payloads } = parseMqttPackets(u8);
+
+          if (hasConnAck && ws.readyState === WebSocket.OPEN) {
+            ws.send(buildMqttSubscribe(roomTopicRef.current));
+            setIsCloudConnected(true);
+            const presenceMsg: SyncMessage = {
+              type: 'PING_PRESENCE',
+              senderId: senderIdRef.current,
+              timestamp: Date.now()
+            };
+            ws.send(buildMqttPublish(roomTopicRef.current, JSON.stringify(presenceMsg), false));
+          }
+
+          for (const payloadStr of payloads) {
+            try {
+              const data: SyncMessage = JSON.parse(payloadStr);
+              if (data.senderId === senderIdRef.current) continue;
+              applyIncomingSync(data);
+            } catch {
+              // ignore malformed JSON
+            }
           }
         };
 
         ws.onclose = () => {
-          setIsCloudConnected(false);
           clearInterval(keepAliveInterval);
-          cloudSocketRef.current = null;
+          if (cloudSocketRef.current === ws) {
+            cloudSocketRef.current = null;
+            setIsCloudConnected(false);
+          }
           if (!isUnmounted) {
-            reconnectTimeout = setTimeout(connectCloud, 2500);
+            reconnectTimeout = setTimeout(connectCloud, 2000);
           }
         };
 
         ws.onerror = () => {
-          setIsCloudConnected(false);
+          if (cloudSocketRef.current === ws) {
+            setIsCloudConnected(false);
+          }
         };
       } catch {
         setIsCloudConnected(false);
@@ -315,16 +366,25 @@ export function usePresentationSync(
       isUnmounted = true;
       clearTimeout(reconnectTimeout);
       clearInterval(keepAliveInterval);
-      if (cloudSocketRef.current) {
-        cloudSocketRef.current.close();
+      if (activeWs) {
+        activeWs.onclose = null;
+        activeWs.onerror = null;
+        activeWs.onmessage = null;
+        activeWs.onopen = null;
+        if (cloudSocketRef.current === activeWs) {
+          cloudSocketRef.current = null;
+        }
+        activeWs.close();
       }
     };
   }, [applyIncomingSync]);
 
-  // 3. Set up Local Vite WebSocket (/sync-ws) when running on local dev network
+  // 3. Set up Local Vite WebSocket (/sync-ws) + HTTP fallback when running on local dev network
   useEffect(() => {
     let reconnectTimeout: ReturnType<typeof setTimeout>;
+    let pollInterval: ReturnType<typeof setInterval>;
     let isUnmounted = false;
+    let activeWs: WebSocket | null = null;
 
     const host = window.location.hostname;
     const isLocalNetwork =
@@ -343,10 +403,11 @@ export function usePresentationSync(
 
       try {
         const ws = new WebSocket(wsUrl);
+        activeWs = ws;
         localSocketRef.current = ws;
 
         ws.onopen = () => {
-          if (isUnmounted) {
+          if (isUnmounted || localSocketRef.current !== ws) {
             ws.close();
             return;
           }
@@ -355,6 +416,7 @@ export function usePresentationSync(
         };
 
         ws.onmessage = (event) => {
+          if (isUnmounted) return;
           try {
             const data: SyncMessage = JSON.parse(event.data);
             if (typeof data.clientsCount === 'number') {
@@ -367,15 +429,19 @@ export function usePresentationSync(
         };
 
         ws.onclose = () => {
-          setIsLocalConnected(false);
-          localSocketRef.current = null;
+          if (localSocketRef.current === ws) {
+            localSocketRef.current = null;
+            setIsLocalConnected(false);
+          }
           if (!isUnmounted) {
-            reconnectTimeout = setTimeout(connectLocal, 2500);
+            reconnectTimeout = setTimeout(connectLocal, 2000);
           }
         };
 
         ws.onerror = () => {
-          setIsLocalConnected(false);
+          if (localSocketRef.current === ws) {
+            setIsLocalConnected(false);
+          }
         };
       } catch {
         setIsLocalConnected(false);
@@ -384,11 +450,35 @@ export function usePresentationSync(
 
     connectLocal();
 
+    // Lightweight HTTP state check every 800ms on local network as bulletproof fallback
+    pollInterval = setInterval(() => {
+      fetch('/api/sync-state')
+        .then((r) => r.json())
+        .then((data: SyncMessage) => {
+          if (!isUnmounted && data?.type === 'SYNC_STATE') {
+            setIsLocalConnected(true);
+            if (typeof data.clientsCount === 'number') {
+              setLocalClientsCount(Math.max(data.clientsCount, 2));
+            }
+            applyIncomingSync(data);
+          }
+        })
+        .catch(() => {});
+    }, 800);
+
     return () => {
       isUnmounted = true;
       clearTimeout(reconnectTimeout);
-      if (localSocketRef.current) {
-        localSocketRef.current.close();
+      clearInterval(pollInterval);
+      if (activeWs) {
+        activeWs.onclose = null;
+        activeWs.onerror = null;
+        activeWs.onmessage = null;
+        activeWs.onopen = null;
+        if (localSocketRef.current === activeWs) {
+          localSocketRef.current = null;
+        }
+        activeWs.close();
       }
     };
   }, [applyIncomingSync]);

@@ -117,8 +117,7 @@ export function presentationSyncPlugin(): Plugin {
           const ip = getLocalIp();
           const port = server.config.server.port || 5173;
           const hostHeader = req.headers.host;
-          // If request came from another device or host, use host if available, else detected LAN IP
-          const url = `http://${ip}:${port}/remote`;
+          const url = `http://${ip}:${port}/?view=remote`;
 
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({
@@ -128,6 +127,66 @@ export function presentationSyncPlugin(): Plugin {
             hostHeader
           }));
         }
+      });
+
+      // HTTP endpoint for instant state sync & fallback polling
+      server.middlewares.use('/api/sync-state', (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Cache-Control', 'no-store');
+
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk) => {
+            body += chunk.toString();
+          });
+          req.on('end', () => {
+            try {
+              const message = JSON.parse(body);
+              if (message.type === 'SET_SLIDE' && typeof message.index === 'number') {
+                currentSlideIndex = message.index;
+                activeTab = 'story';
+                photoIndex = 0;
+                isLightboxOpen = false;
+                broadcastState();
+              } else if (message.type === 'SET_TAB' && typeof message.tab === 'string') {
+                activeTab = message.tab;
+                broadcastState();
+              } else if (message.type === 'SET_PHOTO') {
+                if (typeof message.photoIndex === 'number') photoIndex = message.photoIndex;
+                if (typeof message.isLightboxOpen === 'boolean') isLightboxOpen = message.isLightboxOpen;
+                broadcastState();
+              } else if (message.type === 'SYNC_STATE') {
+                if (typeof message.currentSlideIndex === 'number') currentSlideIndex = message.currentSlideIndex;
+                if (typeof message.activeTab === 'string') activeTab = message.activeTab;
+                if (typeof message.photoIndex === 'number') photoIndex = message.photoIndex;
+                if (typeof message.isLightboxOpen === 'boolean') isLightboxOpen = message.isLightboxOpen;
+                broadcastState();
+              }
+            } catch {
+              // ignore
+            }
+            res.end(JSON.stringify({
+              type: 'SYNC_STATE',
+              currentSlideIndex,
+              activeTab,
+              photoIndex,
+              isLightboxOpen,
+              clientsCount: wss?.clients.size || 1,
+              timestamp: Date.now()
+            }));
+          });
+          return;
+        }
+
+        res.end(JSON.stringify({
+          type: 'SYNC_STATE',
+          currentSlideIndex,
+          activeTab,
+          photoIndex,
+          isLightboxOpen,
+          clientsCount: wss?.clients.size || 1,
+          timestamp: Date.now()
+        }));
       });
 
       // Serve /remote fallback to index.html for client-side routing
