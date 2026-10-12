@@ -270,8 +270,8 @@ export const slides: WineSlide[] = [
     imageCaption: "Outside: Gracianna Winery & Sunny Tasting Patio on Westside Road",
     gallery: [
       { url: "/wineries/gracianna.jpg", caption: "Outside: Gracianna Winery & Sunny Tasting Patio on Westside Road" },
-      { url: "/wineries/gracianna-2.jpg", caption: "The Vines: Estate Vineyard Rows Along the Russian River" },
-      { url: "/wineries/gracianna-3.jpg", caption: "Unique Tradition: Gracianna's Signature 'Grateful' Named Grapevine Plaque on the Cluster" }
+      { url: "/wineries/gracianna-2.jpg", caption: "The Vines: Early Morning Fog Over Gracianna's Mercedes Riverblock Vineyard" },
+      { url: "/wineries/gracianna-3.jpg", caption: "The Estate: Gracianna Winery & Vineyard Grounds Along Westside Road" }
     ],
     wineNumber: 2,
     winemaker: "Trini Amador",
@@ -331,7 +331,7 @@ export const slides: WineSlide[] = [
     imageCaption: "Outside: Turley Wine Cellars Estate Grounds & Vintage Tractor in St. Helena",
     gallery: [
       { url: "/wineries/turley.jpg", caption: "Outside: Turley Wine Cellars Estate Grounds & Vintage Tractor in St. Helena" },
-      { url: "/wineries/turley-2.jpg", caption: "The Vines: Gnarled 80+ Year-Old Heritage Zinfandel Clusters on the Vine" },
+      { url: "/wineries/turley-2.jpg", caption: "Tasting Room Entrance: 'Old Vines • Young Love' at Turley Wine Cellars" },
       { url: "/wineries/turley-3.jpg", caption: "Inside: Turley Tasting Room with Vintage California Bear Flag & Wood Bar" }
     ],
     wineNumber: 3,
@@ -456,7 +456,7 @@ export const slides: WineSlide[] = [
     gallery: [
       { url: "/wineries/stagsleap.jpg", caption: "Outside: Stag's Leap Wine Cellars Stone & Glass Visitor Center" },
       { url: "/wineries/stagsleap-2.jpg", caption: "The Vines: Historic S.L.V. & FAY Vineyards Beneath the Volcanic Stags Leap Palisades" },
-      { url: "/wineries/stagsleap-3.jpg", caption: "Inside the Caves: The Iconic Curved Stone Arcade Entrance to the Underground Cellars" }
+      { url: "/wineries/stagsleap-3.jpg", caption: "Historic Triumph: The 1976 Judgment of Paris Blind Tasting Won by Stag's Leap" }
     ],
     wineNumber: 5,
     winemaker: "Marcus Notaro",
@@ -577,8 +577,8 @@ export const slides: WineSlide[] = [
     imageCaption: "Outside: Historic 1880s Victorian Manor House at AXR Napa Valley",
     gallery: [
       { url: "/wineries/axr.jpg", caption: "Outside: Historic 1880s Victorian Manor House at AXR Napa Valley" },
-      { url: "/wineries/axr-2.jpg", caption: "The Vines: Estate Cabernet Sauvignon Rows Bordering Ancient St. Helena Redwoods" },
-      { url: "/wineries/axr-3.jpg", caption: "Inside: The Historic Victorian Parlor & Private Tasting Salon at AXR" }
+      { url: "/wineries/axr-2.jpg", caption: "Estate Canopy: Towering Ancient St. Helena Redwoods at AXR" },
+      { url: "/wineries/axr-3.jpg", caption: "The Winery Barn: Historic Tasting & Production Barn at AXR Napa Valley" }
     ],
     wineNumber: 7,
     winemaker: "Jean Hoefliger",
