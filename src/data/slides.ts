@@ -79,18 +79,22 @@ export const slides: WineSlide[] = [
     terroirImpact: "Elevation ranges from sea level in Carneros to 2,600+ ft in the Mayacamas. The marine fog layer pools in low valley basins up to ~1,000 ft, creating a thermal inversion where mountain vineyards are warmer at night and bathed in intense UV sunlight by day.",
     speakerNotes: {
       talkingPoints: [
-        "Welcome everyone! Frame tonight's journey: We are not just tasting wine, we are tracing geology, fog lines, and vine age.",
-        "Napa Valley is surprisingly compact: only 30 miles long and 5 miles wide, yet contains half of the world's soil orders (33 soil series).",
-        "Flight progression overview: 1 sparkling preview, 1 crisp coastal white, 1 heritage old-vine red, followed by 4 distinct Cabernet expressions culminating in a 10-year library vintage.",
-        "Point out the elevation contrast on screen: From sea level in Carneros/San Pablo Bay to 2,600+ feet in the Mayacamas and Vaca mountain ranges."
+        "Welcome everyone! Frame tonight's journey: We are not just tasting wine, we are tracing geology, fog lines, and 180 years of Napa Valley history.",
+        "The Pioneer Era (1838–1862): Wine history began in 1838 when pioneer George Yount planted the valley's very first cultivated vines in Yountville—the exact ground of Dominus Napanook (Wine 4). In 1862, Jacob Schram founded Schramsberg (Wine 1), digging California's first volcanic aging caves.",
+        "The Gold Rush Boom & 'Bottled Poetry' (1870s–1880s): Gold Rush wealth and the transcontinental railroad sparked a boom of over 140 wineries. In 1880, Robert Louis Stevenson honeymooned on Mount St. Helena and penned the famous line on the valley's sign: '...and the wine is bottled poetry.'",
+        "The Dark Ages of Prohibition (1919–1933): Prohibition wiped out over 90% of wineries overnight, with walnut orchards and cattle replacing vineyards. Only ancient, deep-rooted heritage vines survived—the very vines Turley still harvests from today (Wine 3).",
+        "The 1968 Agricultural Preserve: Visionary vintners passed the nation's first land preservation act, legally protecting Napa from suburban sprawl and preserving the valley exclusively for agriculture forever.",
+        "The 1976 Judgment of Paris: In a blind tasting that shocked the global wine establishment, California defeated France's top first-growth Bordeaux. The winning Cabernet was Stag's Leap Wine Cellars (Wine 5), permanently establishing Napa Valley among the world's elite.",
+        "Napa Valley is surprisingly compact: only 30 miles long and 5 miles wide, yet contains half of the world's soil orders (33 soil series)."
       ],
       tastingCues: [
         "Prompt guests to note how acid feels on the tongue early on vs. how tannins grip later in the red hillside flights.",
         "Encourage everyone to smell the wine twice: once immediately on the pour, and again after 60 seconds of air."
       ],
       funFacts: [
-        "Napa Valley accounts for only 4% of California's total wine harvest volume, but generates over 30% of its total economic value.",
-        "George Yount planted the valley's very first commercial vineyard in 1838 right near where we'll stop at Dominus."
+        "The name 'Napa' originates from the indigenous Wappo people who lived here for 10,000 years, commonly translated as 'land of plenty.'",
+        "Napa Valley accounts for only 0.4% of the world's wine and 4% of California's volume, but its wines generate over 30% of the state's total wine economic value.",
+        "When George Yount first planted grapes in 1838, he wrote that the valley looked like 'an emerald paradise waiting for a plow.'"
       ],
       pourNotes: "Serve water, ensure palate-cleansing crackers/bread are on the table, and have Schramsberg chilled at 45°F-48°F ready for Glass #1.",
       terroirBreakdown: {
@@ -477,7 +481,7 @@ export const slides: WineSlide[] = [
     speakerNotes: {
       talkingPoints: [
         "Our grand finale: A 10-year aged library vintage (2016) from St. Helena crafted by Swiss-born cult winemaker Jean Hoefliger.",
-        "The name 'AXR' honors AxR#1, the historic hybrid rootstock that pioneered California's modern vineyard replanting era.",
+        "The story behind the name 'AXR': Honors AxR#1 (Aramon x Rupestris Ganzin No. 1), the legendary hybrid rootstock that saved California viticulture when phylloxera threatened to wipe out vineyards in the late 19th and mid-20th centuries, allowing grapevines to flourish across St. Helena benchlands.",
         "The 2016 vintage in Napa Valley is celebrated as one of the finest of the century—near-perfect uniform warmth allowing optimal physiological ripeness.",
         "Aged 22 months in 80% new French oak, then cellared for a decade to achieve seamless integration."
       ],
@@ -488,7 +492,8 @@ export const slides: WineSlide[] = [
         "Truffle pairing cue: The dark cocoa butter in the chocolate truffles marries with the softened cassis, sweet cedar, and tobacco notes."
       ],
       funFacts: [
-        "The historic AXR estate in St. Helena was an 1880s brewery, an inn frequented by writer Jack London, and a clandestine Prohibition speakeasy."
+        "The historic AXR estate in St. Helena was an 1880s brewery, an inn frequented by writer Jack London, and a clandestine Prohibition speakeasy.",
+        "AxR#1 rootstock was once planted on over 80% of all Napa vineyards, becoming synonymous with the valley's mid-century vineyard rebirth."
       ],
       pourNotes: "Pour gently at 65°F to preserve clarity. Encourage guests to sit with this final glass and let it evolve in the glass.",
       terroirBreakdown: {
