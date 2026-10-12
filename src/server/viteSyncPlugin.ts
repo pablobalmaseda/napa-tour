@@ -20,6 +20,9 @@ function getLocalIp(): string {
 export function presentationSyncPlugin(): Plugin {
   let wss: WebSocketServer | null = null;
   let currentSlideIndex = 0;
+  let activeTab = 'story';
+  let photoIndex = 0;
+  let isLightboxOpen = false;
 
   return {
     name: 'presentation-sync-server',
@@ -42,6 +45,9 @@ export function presentationSyncPlugin(): Plugin {
         const payload = JSON.stringify({
           type: 'SYNC_STATE',
           currentSlideIndex,
+          activeTab,
+          photoIndex,
+          isLightboxOpen,
           clientsCount: wss.clients.size,
           timestamp: Date.now()
         });
@@ -58,6 +64,9 @@ export function presentationSyncPlugin(): Plugin {
         ws.send(JSON.stringify({
           type: 'SYNC_STATE',
           currentSlideIndex,
+          activeTab,
+          photoIndex,
+          isLightboxOpen,
           clientsCount: wss?.clients.size || 1,
           timestamp: Date.now()
         }));
@@ -70,11 +79,24 @@ export function presentationSyncPlugin(): Plugin {
             const message = JSON.parse(data.toString());
             if (message.type === 'SET_SLIDE' && typeof message.index === 'number') {
               currentSlideIndex = message.index;
+              activeTab = 'story';
+              photoIndex = 0;
+              isLightboxOpen = false;
+              broadcastState();
+            } else if (message.type === 'SET_TAB' && typeof message.tab === 'string') {
+              activeTab = message.tab;
+              broadcastState();
+            } else if (message.type === 'SET_PHOTO') {
+              if (typeof message.photoIndex === 'number') photoIndex = message.photoIndex;
+              if (typeof message.isLightboxOpen === 'boolean') isLightboxOpen = message.isLightboxOpen;
               broadcastState();
             } else if (message.type === 'GET_STATE') {
               ws.send(JSON.stringify({
                 type: 'SYNC_STATE',
                 currentSlideIndex,
+                activeTab,
+                photoIndex,
+                isLightboxOpen,
                 clientsCount: wss?.clients.size || 1,
                 timestamp: Date.now()
               }));

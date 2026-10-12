@@ -39,6 +39,31 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
     return () => clearInterval(timer);
   }, [photos.length, isHovered, isLightboxOpen, slide.id]);
 
+  const notifyRemotePhotoState = (nextIdx: number, nextLightbox: boolean) => {
+    window.dispatchEvent(
+      new CustomEvent('wine-photo-local-change', {
+        detail: { photoIndex: nextIdx, isLightboxOpen: nextLightbox }
+      })
+    );
+  };
+
+  // Listen for remote photo commands coming from the mobile phone companion
+  useEffect(() => {
+    const handleRemotePhotoSync = (e: Event) => {
+      const detail = (e as CustomEvent<{ photoIndex: number; isLightboxOpen: boolean }>).detail;
+      if (!detail) return;
+      if (typeof detail.photoIndex === 'number') {
+        setActiveIndex(((detail.photoIndex % photos.length) + photos.length) % photos.length);
+      }
+      if (typeof detail.isLightboxOpen === 'boolean') {
+        setIsLightboxOpen(detail.isLightboxOpen);
+      }
+    };
+
+    window.addEventListener('wine-photo-sync', handleRemotePhotoSync);
+    return () => window.removeEventListener('wine-photo-sync', handleRemotePhotoSync);
+  }, [photos.length]);
+
   // Keyboard navigation when full-screen lightbox is open (intercepts before App slide navigation)
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -47,37 +72,55 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
         e.stopImmediatePropagation();
-        setActiveIndex((prev) => (prev + 1) % photos.length);
+        setActiveIndex((prev) => {
+          const next = (prev + 1) % photos.length;
+          notifyRemotePhotoState(next, true);
+          return next;
+        });
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         e.preventDefault();
         e.stopImmediatePropagation();
-        setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
+        setActiveIndex((prev) => {
+          const next = (prev - 1 + photos.length) % photos.length;
+          notifyRemotePhotoState(next, true);
+          return next;
+        });
       } else if (e.key === 'Escape') {
         e.preventDefault();
         e.stopImmediatePropagation();
         setIsLightboxOpen(false);
+        notifyRemotePhotoState(activeIndex, false);
       } else if (['1', '2', '3'].includes(e.key)) {
         const idx = parseInt(e.key, 10) - 1;
         if (idx < photos.length) {
           e.preventDefault();
           e.stopImmediatePropagation();
           setActiveIndex(idx);
+          notifyRemotePhotoState(idx, true);
         }
       }
     };
 
     window.addEventListener('keydown', handleLightboxKeyDown, { capture: true });
     return () => window.removeEventListener('keydown', handleLightboxKeyDown, { capture: true });
-  }, [isLightboxOpen, photos.length]);
+  }, [isLightboxOpen, photos.length, activeIndex]);
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    setActiveIndex((prev) => {
+      const next = (prev - 1 + photos.length) % photos.length;
+      notifyRemotePhotoState(next, isLightboxOpen);
+      return next;
+    });
   };
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setActiveIndex((prev) => (prev + 1) % photos.length);
+    setActiveIndex((prev) => {
+      const next = (prev + 1) % photos.length;
+      notifyRemotePhotoState(next, isLightboxOpen);
+      return next;
+    });
   };
 
   const currentPhoto = photos[activeIndex] || photos[0];

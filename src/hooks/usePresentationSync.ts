@@ -1,10 +1,93 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import type { PresentationTabId } from '../types/presentation';
 
-interface SyncMessage {
-  type: 'SYNC_STATE' | 'SET_SLIDE' | 'GET_STATE';
+export interface SyncMessage {
+  type: 'SYNC_STATE' | 'SET_SLIDE' | 'SET_TAB' | 'SET_PHOTO' | 'GET_STATE' | 'PING_PRESENCE';
+  senderId?: string;
   currentSlideIndex?: number;
+  activeTab?: PresentationTabId;
+  photoIndex?: number;
+  isLightboxOpen?: boolean;
   clientsCount?: number;
   timestamp?: number;
+}
+
+// Minimal, zero-dependency MQTT 3.1.1 over WebSocket helpers for cloud real-time sync
+function encodeMqttLength(len: number): number[] {
+  const out: number[] = [];
+  do {
+    let b = len % 128;
+    len = Math.floor(len / 128);
+    if (len > 0) b |= 128;
+    out.push(b);
+  } while (len > 0);
+  return out;
+}
+
+function encodeMqttString(str: string): Uint8Array {
+  const enc = new TextEncoder().encode(str);
+  const out = new Uint8Array(2 + enc.length);
+  out[0] = (enc.length >> 8) & 0xff;
+  out[1] = enc.length & 0xff;
+  out.set(enc, 2);
+  return out;
+}
+
+function concatUint8(arrays: Uint8Array[]): Uint8Array {
+  const total = arrays.reduce((acc, a) => acc + a.length, 0);
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for (const a of arrays) {
+    out.set(a, offset);
+    offset += a.length;
+  }
+  return out;
+}
+
+function buildMqttConnect(clientId: string): Uint8Array {
+  const proto = encodeMqttString('MQTT');
+  const flags = new Uint8Array([4, 2, 0, 60]); // MQTT 3.1.1, CleanSession, 60s KeepAlive
+  const payload = encodeMqttString(clientId);
+  const remLen = proto.length + flags.length + payload.length;
+  return concatUint8([new Uint8Array([0x10, ...encodeMqttLength(remLen)]), proto, flags, payload]);
+}
+
+function buildMqttSubscribe(topic: string): Uint8Array {
+  const packetId = new Uint8Array([0x00, 0x01]);
+  const topicBuf = encodeMqttString(topic);
+  const qos = new Uint8Array([0x00]);
+  const remLen = packetId.length + topicBuf.length + qos.length;
+  return concatUint8([new Uint8Array([0x82, ...encodeMqttLength(remLen)]), packetId, topicBuf, qos]);
+}
+
+function buildMqttPublish(topic: string, message: string, retain = false): Uint8Array {
+  const topicBuf = encodeMqttString(topic);
+  const msgBuf = new TextEncoder().encode(message);
+  const remLen = topicBuf.length + msgBuf.length;
+  const headerByte = retain ? 0x31 : 0x30;
+  return concatUint8([new Uint8Array([headerByte, ...encodeMqttLength(remLen)]), topicBuf, msgBuf]);
+}
+
+function parseMqttPublish(u8: Uint8Array): string | null {
+  if ((u8[0] & 0xf0) !== 0x30) return null;
+  let idx = 1;
+  while (idx < u8.length && (u8[idx++] & 128) !== 0) {
+    // skip remaining length bytes
+  }
+  if (idx + 2 > u8.length) return null;
+  const topicLen = (u8[idx] << 8) | u8[idx + 1];
+  idx += 2 + topicLen;
+  if ((u8[0] & 0x06) > 0) {
+    idx += 2; // QoS > 0 packet identifier
+  }
+  if (idx > u8.length) return null;
+  return new TextDecoder().decode(u8.slice(idx));
+}
+
+export function getSyncRoomId(): string {
+  if (typeof window === 'undefined') return 'main-flight';
+  const params = new URLSearchParams(window.location.search);
+  return params.get('room') || 'main-flight';
 }
 
 export function usePresentationSync(
@@ -14,138 +97,360 @@ export function usePresentationSync(
 ) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(initialIndex);
   const currentSlideIndexRef = useRef(initialIndex);
-  const [isConnected, setIsConnected] = useState(false);
-  const [clientsCount, setClientsCount] = useState(1);
-  const socketRef = useRef<WebSocket | null>(null);
-  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
-  // Safe internal state updater that synchronizes the ref
-  const setIndexInternal = useCallback((index: number) => {
-    currentSlideIndexRef.current = index;
-    setCurrentSlideIndex(index);
+  const [activeTab, setActiveTabState] = useState<PresentationTabId>('story');
+  const activeTabRef = useRef<PresentationTabId>('story');
+
+  const [photoIndex, setPhotoIndexState] = useState(0);
+  const photoIndexRef = useRef(0);
+
+  const [isLightboxOpen, setIsLightboxOpenState] = useState(false);
+  const isLightboxOpenRef = useRef(false);
+
+  const [isLocalConnected, setIsLocalConnected] = useState(false);
+  const [isCloudConnected, setIsCloudConnected] = useState(false);
+  const [localClientsCount, setLocalClientsCount] = useState(1);
+  const [cloudPeersCount, setCloudPeersCount] = useState(1);
+
+  const senderIdRef = useRef('peer_' + Math.random().toString(36).slice(2, 10));
+  const seenPeersRef = useRef<Map<string, number>>(new Map());
+  const localSocketRef = useRef<WebSocket | null>(null);
+  const cloudSocketRef = useRef<WebSocket | null>(null);
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+  const roomTopicRef = useRef(`napa-tour/sync/${getSyncRoomId()}`);
+
+  const dispatchPhotoSyncEvent = useCallback((nextPhotoIdx: number, nextLightbox: boolean) => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('wine-photo-sync', {
+          detail: { photoIndex: nextPhotoIdx, isLightboxOpen: nextLightbox }
+        })
+      );
+    }
   }, []);
 
-  // Set up BroadcastChannel (fallback / dual channel for same-browser windows)
+  const applyIncomingSync = useCallback(
+    (data: SyncMessage) => {
+      if (data.senderId && data.senderId !== senderIdRef.current) {
+        seenPeersRef.current.set(data.senderId, Date.now());
+        // Clean up stale peers older than 45s
+        const now = Date.now();
+        for (const [peer, ts] of seenPeersRef.current.entries()) {
+          if (now - ts > 45000) seenPeersRef.current.delete(peer);
+        }
+        setCloudPeersCount(1 + seenPeersRef.current.size);
+      }
+
+      if (data.type === 'SYNC_STATE') {
+        let slideChanged = false;
+        if (
+          typeof data.currentSlideIndex === 'number' &&
+          data.currentSlideIndex >= 0 &&
+          data.currentSlideIndex < totalSlides &&
+          data.currentSlideIndex !== currentSlideIndexRef.current
+        ) {
+          currentSlideIndexRef.current = data.currentSlideIndex;
+          setCurrentSlideIndex(data.currentSlideIndex);
+          slideChanged = true;
+          onExternalChange?.(data.currentSlideIndex);
+        }
+
+        if (data.activeTab && data.activeTab !== activeTabRef.current) {
+          activeTabRef.current = data.activeTab;
+          setActiveTabState(data.activeTab);
+        } else if (slideChanged && !data.activeTab) {
+          activeTabRef.current = 'story';
+          setActiveTabState('story');
+        }
+
+        let photoChanged = false;
+        if (typeof data.photoIndex === 'number' && data.photoIndex !== photoIndexRef.current) {
+          photoIndexRef.current = data.photoIndex;
+          setPhotoIndexState(data.photoIndex);
+          photoChanged = true;
+        }
+        if (typeof data.isLightboxOpen === 'boolean' && data.isLightboxOpen !== isLightboxOpenRef.current) {
+          isLightboxOpenRef.current = data.isLightboxOpen;
+          setIsLightboxOpenState(data.isLightboxOpen);
+          photoChanged = true;
+        }
+        if (photoChanged) {
+          dispatchPhotoSyncEvent(photoIndexRef.current, isLightboxOpenRef.current);
+        }
+      }
+    },
+    [totalSlides, onExternalChange, dispatchPhotoSyncEvent]
+  );
+
+  // Helper to broadcast full current state across all active transports
+  const broadcastFullState = useCallback((retainCloud = true) => {
+    const stateMsg: SyncMessage = {
+      type: 'SYNC_STATE',
+      senderId: senderIdRef.current,
+      currentSlideIndex: currentSlideIndexRef.current,
+      activeTab: activeTabRef.current,
+      photoIndex: photoIndexRef.current,
+      isLightboxOpen: isLightboxOpenRef.current,
+      timestamp: Date.now()
+    };
+
+    // 1. Cloud MQTT over WSS
+    if (cloudSocketRef.current && cloudSocketRef.current.readyState === WebSocket.OPEN) {
+      try {
+        cloudSocketRef.current.send(
+          buildMqttPublish(roomTopicRef.current, JSON.stringify(stateMsg), retainCloud)
+        );
+      } catch {
+        // ignore send errors
+      }
+    }
+
+    // 2. BroadcastChannel (same browser)
+    if (broadcastChannelRef.current) {
+      try {
+        broadcastChannelRef.current.postMessage(stateMsg);
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  // 1. Set up BroadcastChannel (same-browser tabs)
   useEffect(() => {
     if (typeof BroadcastChannel !== 'undefined') {
       const bc = new BroadcastChannel('wine-presentation-sync');
       broadcastChannelRef.current = bc;
-
       bc.onmessage = (event: MessageEvent<SyncMessage>) => {
-        if (event.data?.type === 'SYNC_STATE' && typeof event.data.currentSlideIndex === 'number') {
-          const newIdx = event.data.currentSlideIndex;
-          if (newIdx >= 0 && newIdx < totalSlides && newIdx !== currentSlideIndexRef.current) {
-            setIndexInternal(newIdx);
-            onExternalChange?.(newIdx);
-          }
-        }
+        if (event.data) applyIncomingSync(event.data);
       };
-
-      return () => {
-        bc.close();
-      };
+      return () => bc.close();
     }
-  }, [totalSlides, onExternalChange, setIndexInternal]);
+  }, [applyIncomingSync]);
 
-  // Set up WebSocket connection to Vite sync server
+  // 2. Set up Cloud MQTT-over-WSS Relay (works on Vercel / GitHub / Mobile / Anywhere)
   useEffect(() => {
     let reconnectTimeout: ReturnType<typeof setTimeout>;
+    let keepAliveInterval: ReturnType<typeof setInterval>;
     let isUnmounted = false;
 
-    function connect() {
+    function connectCloud() {
       if (isUnmounted) return;
-
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}/sync-ws`;
-
       try {
-        const ws = new WebSocket(wsUrl);
-        socketRef.current = ws;
+        const ws = new WebSocket('wss://broker.emqx.io:8084/mqtt', 'mqtt');
+        ws.binaryType = 'arraybuffer';
+        cloudSocketRef.current = ws;
 
         ws.onopen = () => {
           if (isUnmounted) {
             ws.close();
             return;
           }
-          setIsConnected(true);
-          // Request initial state from server
+          ws.send(buildMqttConnect(senderIdRef.current));
+          setTimeout(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(buildMqttSubscribe(roomTopicRef.current));
+              setIsCloudConnected(true);
+              // Announce presence
+              const presenceMsg: SyncMessage = {
+                type: 'PING_PRESENCE',
+                senderId: senderIdRef.current,
+                timestamp: Date.now()
+              };
+              ws.send(buildMqttPublish(roomTopicRef.current, JSON.stringify(presenceMsg), false));
+            }
+          }, 120);
+
+          // MQTT KeepAlive Ping + Presence Heartbeat every 20s
+          keepAliveInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(new Uint8Array([0xc0, 0x00])); // MQTT PINGREQ
+              const presenceMsg: SyncMessage = {
+                type: 'PING_PRESENCE',
+                senderId: senderIdRef.current,
+                timestamp: Date.now()
+              };
+              ws.send(buildMqttPublish(roomTopicRef.current, JSON.stringify(presenceMsg), false));
+            }
+          }, 20000);
+        };
+
+        ws.onmessage = (event) => {
+          if (!(event.data instanceof ArrayBuffer)) return;
+          const u8 = new Uint8Array(event.data);
+          const payloadStr = parseMqttPublish(u8);
+          if (!payloadStr) return;
+          try {
+            const data: SyncMessage = JSON.parse(payloadStr);
+            if (data.senderId === senderIdRef.current) return;
+            applyIncomingSync(data);
+          } catch {
+            // ignore malformed JSON
+          }
+        };
+
+        ws.onclose = () => {
+          setIsCloudConnected(false);
+          clearInterval(keepAliveInterval);
+          cloudSocketRef.current = null;
+          if (!isUnmounted) {
+            reconnectTimeout = setTimeout(connectCloud, 2500);
+          }
+        };
+
+        ws.onerror = () => {
+          setIsCloudConnected(false);
+        };
+      } catch {
+        setIsCloudConnected(false);
+        if (!isUnmounted) {
+          reconnectTimeout = setTimeout(connectCloud, 3000);
+        }
+      }
+    }
+
+    connectCloud();
+
+    return () => {
+      isUnmounted = true;
+      clearTimeout(reconnectTimeout);
+      clearInterval(keepAliveInterval);
+      if (cloudSocketRef.current) {
+        cloudSocketRef.current.close();
+      }
+    };
+  }, [applyIncomingSync]);
+
+  // 3. Set up Local Vite WebSocket (/sync-ws) when running on local dev network
+  useEffect(() => {
+    let reconnectTimeout: ReturnType<typeof setTimeout>;
+    let isUnmounted = false;
+
+    const host = window.location.hostname;
+    const isLocalNetwork =
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host.startsWith('192.168.') ||
+      host.startsWith('10.') ||
+      host.startsWith('172.');
+
+    if (!isLocalNetwork) return;
+
+    function connectLocal() {
+      if (isUnmounted) return;
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/sync-ws`;
+
+      try {
+        const ws = new WebSocket(wsUrl);
+        localSocketRef.current = ws;
+
+        ws.onopen = () => {
+          if (isUnmounted) {
+            ws.close();
+            return;
+          }
+          setIsLocalConnected(true);
           ws.send(JSON.stringify({ type: 'GET_STATE' }));
         };
 
         ws.onmessage = (event) => {
           try {
             const data: SyncMessage = JSON.parse(event.data);
-            if (data.type === 'SYNC_STATE' && typeof data.currentSlideIndex === 'number') {
-              const newIdx = data.currentSlideIndex;
-              if (newIdx >= 0 && newIdx < totalSlides && newIdx !== currentSlideIndexRef.current) {
-                setIndexInternal(newIdx);
-                onExternalChange?.(newIdx);
-              }
-              if (typeof data.clientsCount === 'number') {
-                setClientsCount(data.clientsCount);
-              }
+            if (typeof data.clientsCount === 'number') {
+              setLocalClientsCount(data.clientsCount);
             }
+            applyIncomingSync(data);
           } catch {
-            // ignore non-json
+            // ignore
           }
         };
 
         ws.onclose = () => {
-          setIsConnected(false);
-          socketRef.current = null;
+          setIsLocalConnected(false);
+          localSocketRef.current = null;
           if (!isUnmounted) {
-            reconnectTimeout = setTimeout(connect, 2000);
+            reconnectTimeout = setTimeout(connectLocal, 2500);
           }
         };
 
         ws.onerror = () => {
-          setIsConnected(false);
+          setIsLocalConnected(false);
         };
       } catch {
-        setIsConnected(false);
-        if (!isUnmounted) {
-          reconnectTimeout = setTimeout(connect, 3000);
-        }
+        setIsLocalConnected(false);
       }
     }
 
-    connect();
+    connectLocal();
 
     return () => {
       isUnmounted = true;
       clearTimeout(reconnectTimeout);
-      if (socketRef.current) {
-        socketRef.current.close();
+      if (localSocketRef.current) {
+        localSocketRef.current.close();
       }
     };
-  }, [totalSlides, onExternalChange, setIndexInternal]);
+  }, [applyIncomingSync]);
+
+  // Listen for local desktop WineryCarousel user clicks so phone stays in sync too
+  useEffect(() => {
+    const handleLocalPhotoAction = (e: Event) => {
+      const detail = (e as CustomEvent<{ photoIndex: number; isLightboxOpen: boolean }>).detail;
+      if (!detail) return;
+      let changed = false;
+      if (typeof detail.photoIndex === 'number' && detail.photoIndex !== photoIndexRef.current) {
+        photoIndexRef.current = detail.photoIndex;
+        setPhotoIndexState(detail.photoIndex);
+        changed = true;
+      }
+      if (typeof detail.isLightboxOpen === 'boolean' && detail.isLightboxOpen !== isLightboxOpenRef.current) {
+        isLightboxOpenRef.current = detail.isLightboxOpen;
+        setIsLightboxOpenState(detail.isLightboxOpen);
+        changed = true;
+      }
+      if (changed) {
+        if (localSocketRef.current && localSocketRef.current.readyState === WebSocket.OPEN) {
+          localSocketRef.current.send(
+            JSON.stringify({
+              type: 'SET_PHOTO',
+              photoIndex: photoIndexRef.current,
+              isLightboxOpen: isLightboxOpenRef.current
+            })
+          );
+        }
+        broadcastFullState(true);
+      }
+    };
+
+    window.addEventListener('wine-photo-local-change', handleLocalPhotoAction);
+    return () => window.removeEventListener('wine-photo-local-change', handleLocalPhotoAction);
+  }, [broadcastFullState]);
 
   // Navigate to a specific slide
-  const goToSlide = useCallback((index: number) => {
-    if (index < 0 || index >= totalSlides) return;
-    if (index === currentSlideIndexRef.current) return;
+  const goToSlide = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= totalSlides) return;
+      currentSlideIndexRef.current = index;
+      setCurrentSlideIndex(index);
 
-    setIndexInternal(index);
+      activeTabRef.current = 'story';
+      setActiveTabState('story');
 
-    // Broadcast through WebSocket
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({
-        type: 'SET_SLIDE',
-        index
-      }));
-    }
+      photoIndexRef.current = 0;
+      setPhotoIndexState(0);
 
-    // Broadcast through BroadcastChannel
-    if (broadcastChannelRef.current) {
-      broadcastChannelRef.current.postMessage({
-        type: 'SYNC_STATE',
-        currentSlideIndex: index,
-        timestamp: Date.now()
-      });
-    }
-  }, [totalSlides, setIndexInternal]);
+      isLightboxOpenRef.current = false;
+      setIsLightboxOpenState(false);
+      dispatchPhotoSyncEvent(0, false);
 
-  // Navigate strictly one step forward
+      if (localSocketRef.current && localSocketRef.current.readyState === WebSocket.OPEN) {
+        localSocketRef.current.send(JSON.stringify({ type: 'SET_SLIDE', index }));
+      }
+      broadcastFullState(true);
+    },
+    [totalSlides, broadcastFullState, dispatchPhotoSyncEvent]
+  );
+
   const nextSlide = useCallback(() => {
     const current = currentSlideIndexRef.current;
     if (current < totalSlides - 1) {
@@ -153,7 +458,6 @@ export function usePresentationSync(
     }
   }, [totalSlides, goToSlide]);
 
-  // Navigate strictly one step backward
   const prevSlide = useCallback(() => {
     const current = currentSlideIndexRef.current;
     if (current > 0) {
@@ -161,11 +465,79 @@ export function usePresentationSync(
     }
   }, [goToSlide]);
 
+  // Switch active TV presentation tab ('story' | 'palate' | 'food')
+  const setActiveTab = useCallback(
+    (tabOrUpdater: PresentationTabId | ((prev: PresentationTabId) => PresentationTabId)) => {
+      const nextTab =
+        typeof tabOrUpdater === 'function' ? tabOrUpdater(activeTabRef.current) : tabOrUpdater;
+      activeTabRef.current = nextTab;
+      setActiveTabState(nextTab);
+
+      if (localSocketRef.current && localSocketRef.current.readyState === WebSocket.OPEN) {
+        localSocketRef.current.send(JSON.stringify({ type: 'SET_TAB', tab: nextTab }));
+      }
+      broadcastFullState(true);
+    },
+    [broadcastFullState]
+  );
+
+  // Control Winery Photo Carousel & Fullscreen Lightbox on the TV
+  const setPhotoState = useCallback(
+    (nextPhotoIdx?: number, nextLightbox?: boolean) => {
+      const resolvedIdx =
+        typeof nextPhotoIdx === 'number' ? ((nextPhotoIdx % 3) + 3) % 3 : photoIndexRef.current;
+      const resolvedLightbox =
+        typeof nextLightbox === 'boolean' ? nextLightbox : isLightboxOpenRef.current;
+
+      photoIndexRef.current = resolvedIdx;
+      setPhotoIndexState(resolvedIdx);
+      isLightboxOpenRef.current = resolvedLightbox;
+      setIsLightboxOpenState(resolvedLightbox);
+
+      dispatchPhotoSyncEvent(resolvedIdx, resolvedLightbox);
+
+      if (localSocketRef.current && localSocketRef.current.readyState === WebSocket.OPEN) {
+        localSocketRef.current.send(
+          JSON.stringify({
+            type: 'SET_PHOTO',
+            photoIndex: resolvedIdx,
+            isLightboxOpen: resolvedLightbox
+          })
+        );
+      }
+      broadcastFullState(true);
+    },
+    [broadcastFullState, dispatchPhotoSyncEvent]
+  );
+
+  const nextPhoto = useCallback(() => {
+    setPhotoState((photoIndexRef.current + 1) % 3, isLightboxOpenRef.current);
+  }, [setPhotoState]);
+
+  const prevPhoto = useCallback(() => {
+    setPhotoState((photoIndexRef.current + 2) % 3, isLightboxOpenRef.current);
+  }, [setPhotoState]);
+
+  const toggleLightbox = useCallback(() => {
+    setPhotoState(photoIndexRef.current, !isLightboxOpenRef.current);
+  }, [setPhotoState]);
+
+  const isConnected = isLocalConnected || isCloudConnected;
+  const clientsCount = Math.max(localClientsCount, cloudPeersCount);
+
   return {
     currentSlideIndex,
     goToSlide,
     nextSlide,
     prevSlide,
+    activeTab,
+    setActiveTab,
+    photoIndex,
+    isLightboxOpen,
+    setPhotoState,
+    nextPhoto,
+    prevPhoto,
+    toggleLightbox,
     isConnected,
     clientsCount
   };

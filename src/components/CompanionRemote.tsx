@@ -17,7 +17,9 @@ import {
   X,
   Utensils,
   Mountain,
-  UserCheck
+  UserCheck,
+  Maximize2,
+  Monitor
 } from 'lucide-react';
 
 export const CompanionRemote: React.FC = () => {
@@ -26,6 +28,13 @@ export const CompanionRemote: React.FC = () => {
     goToSlide, 
     nextSlide, 
     prevSlide, 
+    activeTab: tvTab,
+    setActiveTab: setTvTab,
+    photoIndex,
+    isLightboxOpen,
+    nextPhoto,
+    prevPhoto,
+    toggleLightbox,
     isConnected, 
     clientsCount 
   } = usePresentationSync(0, slides.length);
@@ -541,14 +550,85 @@ export const CompanionRemote: React.FC = () => {
         )}
       </main>
 
-      {/* Bottom Navigation Bar */}
-      <footer className="shrink-0 bg-[#0e1118]/95 backdrop-blur-lg border-t border-[#232938] px-4 py-3 z-30 shadow-2xl">
+      {/* Bottom Navigation & TV Remote Control Bar */}
+      <footer className="shrink-0 bg-[#0e1118]/95 backdrop-blur-lg border-t border-[#232938] px-4 py-2.5 z-30 shadow-2xl space-y-2">
+        {/* Compact TV Screen Controls (Switch TV Tab & Control Winery Photos on TV) */}
+        <div className="max-w-lg mx-auto flex items-center justify-between gap-2 bg-[#141824] border border-white/10 rounded-xl p-1.5">
+          {/* TV Tab Switcher (1. Terroir / 2. Palate / 3. Pairing) */}
+          <div className="flex items-center gap-1 flex-1">
+            <Monitor className="w-3.5 h-3.5 text-[#d4af37] ml-1 shrink-0" />
+            <button
+              onClick={() => setTvTab('story')}
+              className={`flex-1 py-1.5 px-1.5 rounded-lg text-[10px] font-cinzel tracking-wider uppercase transition-all ${
+                tvTab === 'story'
+                  ? 'bg-[#d4af37] text-black font-bold shadow'
+                  : 'text-gray-300 hover:bg-white/5'
+              }`}
+            >
+              1. Terroir
+            </button>
+            <button
+              onClick={() => setTvTab('palate')}
+              className={`flex-1 py-1.5 px-1.5 rounded-lg text-[10px] font-cinzel tracking-wider uppercase transition-all ${
+                tvTab === 'palate'
+                  ? 'bg-[#d4af37] text-black font-bold shadow'
+                  : 'text-gray-300 hover:bg-white/5'
+              }`}
+            >
+              2. Palate
+            </button>
+            <button
+              onClick={() => setTvTab('food')}
+              className={`flex-1 py-1.5 px-1.5 rounded-lg text-[10px] font-cinzel tracking-wider uppercase transition-all ${
+                tvTab === 'food'
+                  ? 'bg-[#d4af37] text-black font-bold shadow'
+                  : 'text-gray-300 hover:bg-white/5'
+              }`}
+            >
+              3. Pairing
+            </button>
+          </div>
+
+          {/* TV Winery Photo Controls (hidden on the 5 S's slide which has no photo carousel) */}
+          {currentSlide.producerCode !== 'TASTE' && (
+            <div className="flex items-center gap-1 pl-1.5 border-l border-white/10 shrink-0">
+              <button
+                onClick={prevPhoto}
+                className="p-1.5 rounded-lg bg-[#1c2232] hover:bg-[#252d42] border border-white/10 text-[#fae8b4] active:scale-95"
+                title="Previous Winery Photo on TV"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={toggleLightbox}
+                className={`px-2 py-1.5 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1 border transition-all active:scale-95 ${
+                  isLightboxOpen
+                    ? 'bg-[#d4af37] text-black border-[#fae8b4]'
+                    : 'bg-[#1c2232] text-[#fae8b4] border-white/10'
+                }`}
+                title="Toggle Fullscreen Photo on TV"
+              >
+                <Maximize2 className="w-3 h-3" />
+                <span>{photoIndex + 1}/3</span>
+              </button>
+              <button
+                onClick={nextPhoto}
+                className="p-1.5 rounded-lg bg-[#1c2232] hover:bg-[#252d42] border border-white/10 text-[#fae8b4] active:scale-95"
+                title="Next Winery Photo on TV"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Main Slide Navigation Row (Previous / Flight Menu / Next Wine) */}
         <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
           {/* Previous Button */}
           <button
             onClick={prevSlide}
             disabled={currentSlideIndex === 0}
-            className="flex-1 py-3.5 px-4 bg-[#1a202d] hover:bg-[#232b3d] disabled:opacity-30 disabled:pointer-events-none border border-white/10 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
+            className="flex-1 py-3 px-4 bg-[#1a202d] hover:bg-[#232b3d] disabled:opacity-30 disabled:pointer-events-none border border-white/10 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
           >
             <ChevronLeft className="w-5 h-5" />
             <span className="text-sm">Previous</span>
@@ -557,7 +637,7 @@ export const CompanionRemote: React.FC = () => {
           {/* Current Slide Number Center Indicator */}
           <div 
             onClick={() => setShowDrawer(true)} 
-            className="px-3 py-2 bg-[#141824] border border-white/5 rounded-lg text-center cursor-pointer hover:border-[#d4af37]/30 transition-colors"
+            className="px-3 py-1.5 bg-[#141824] border border-white/5 rounded-lg text-center cursor-pointer hover:border-[#d4af37]/30 transition-colors"
           >
             <span className="text-xs font-mono font-bold text-[#d4af37] block">
               {currentSlideIndex + 1}/{slides.length}
@@ -571,7 +651,7 @@ export const CompanionRemote: React.FC = () => {
           <button
             onClick={nextSlide}
             disabled={currentSlideIndex === slides.length - 1}
-            className="flex-1 py-3.5 px-4 bg-gradient-to-r from-[#d4af37] to-[#b39129] hover:brightness-110 disabled:opacity-30 disabled:pointer-events-none text-black rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
+            className="flex-1 py-3 px-4 bg-gradient-to-r from-[#d4af37] to-[#b39129] hover:brightness-110 disabled:opacity-30 disabled:pointer-events-none text-black rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
           >
             <span className="text-sm">Next Wine</span>
             <ChevronRight className="w-5 h-5" />

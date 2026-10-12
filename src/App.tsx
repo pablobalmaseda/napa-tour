@@ -5,7 +5,7 @@ import { WineMap } from './components/WineMap';
 import { CinematicConsole } from './components/CinematicConsole';
 import { PairingModal } from './components/PairingModal';
 import { usePresentationSync } from './hooks/usePresentationSync';
-import type { LayoutMode, PresentationTabId } from './types/presentation';
+import type { LayoutMode } from './types/presentation';
 import { ListOrdered, QrCode } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -14,6 +14,8 @@ export const App: React.FC = () => {
     goToSlide,
     nextSlide,
     prevSlide,
+    activeTab,
+    setActiveTab,
     isConnected,
     clientsCount
   } = usePresentationSync(0, slides.length);
@@ -27,18 +29,10 @@ export const App: React.FC = () => {
     return saved || 'v2-tabs';
   });
 
-  // Presentation Sub-Tab: 'story', 'palate', 'food'
-  const [activeTab, setActiveTab] = useState<PresentationTabId>('story');
-
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);
     localStorage.setItem('napa_layout_mode', mode);
   };
-
-  // Reset tab to 'story' whenever changing to a different wine stop
-  useEffect(() => {
-    setActiveTab('story');
-  }, [currentSlideIndex]);
 
   // Global Keyboard Navigation (Clickers, Space, Arrows, 1/2/3 Tabs, V for View mode)
   useEffect(() => {
@@ -109,7 +103,7 @@ export const App: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [nextSlide, prevSlide]);
+  }, [nextSlide, prevSlide, setActiveTab]);
 
   return (
     <div className="w-screen h-screen flex flex-col lg:flex-row bg-[#0a0c10] text-[#e8e6e3] overflow-hidden select-none relative">

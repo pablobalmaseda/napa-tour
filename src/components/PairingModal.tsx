@@ -22,25 +22,31 @@ export const PairingModal: React.FC<PairingModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    // Fetch local network IP from server
-    fetch('/api/remote-info')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.remoteUrl) {
-          setRemoteUrl(data.remoteUrl);
-          setDetectedIp(data.ip);
-        }
-      })
-      .catch(() => {
-        // Fallback to origin
-        const fallback = `${window.location.origin}/remote`;
-        setRemoteUrl(fallback);
-      });
+    const host = window.location.hostname;
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+
+    if (isLocalHost) {
+      // Fetch local network IP from Vite dev server so phone on Wi-Fi can reach laptop
+      fetch('/api/remote-info')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.remoteUrl) {
+            setRemoteUrl(data.remoteUrl);
+            setDetectedIp(data.ip);
+          }
+        })
+        .catch(() => {
+          setRemoteUrl(`${window.location.origin}/?view=remote`);
+        });
+    } else {
+      // On live hosted deployment (Vercel / GitHub / LAN IP), use origin with ?view=remote
+      setRemoteUrl(`${window.location.origin}/?view=remote`);
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const displayUrl = remoteUrl || `${window.location.origin}/remote`;
+  const displayUrl = remoteUrl || `${window.location.origin}/?view=remote`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(displayUrl);
