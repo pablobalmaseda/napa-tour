@@ -39,6 +39,37 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
     return () => clearInterval(timer);
   }, [photos.length, isHovered, isLightboxOpen, slide.id]);
 
+  // Keyboard navigation when full-screen lightbox is open (intercepts before App slide navigation)
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleLightboxKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setActiveIndex((prev) => (prev + 1) % photos.length);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setIsLightboxOpen(false);
+      } else if (['1', '2', '3'].includes(e.key)) {
+        const idx = parseInt(e.key, 10) - 1;
+        if (idx < photos.length) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          setActiveIndex(idx);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleLightboxKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', handleLightboxKeyDown, { capture: true });
+  }, [isLightboxOpen, photos.length]);
+
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveIndex((prev) => (prev - 1 + photos.length) % photos.length);
