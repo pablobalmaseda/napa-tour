@@ -40,6 +40,32 @@ export const WineryLogo: React.FC<WineryLogoProps> = ({ producerCode, className 
         </div>
       );
 
+    case 'TASTE':
+      // Wine Enthusiast 5 S's Sommelier Tasting Emblem
+      return (
+        <div className={`flex flex-col items-center justify-center text-center ${className}`}>
+          <svg viewBox="0 0 280 75" className="h-full w-auto max-w-[280px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Wine Glass Bowl Silhouette & Swirl Orbit */}
+            <path d="M132 10h16l-2 11c-1 5-6 8-6 8s-5-3-6-8l-2-11z" stroke="#d4af37" strokeWidth="1.2" opacity="0.9"/>
+            <line x1="140" y1="29" x2="140" y2="36" stroke="#d4af37" strokeWidth="1.2" opacity="0.9"/>
+            <line x1="134" y1="36" x2="146" y2="36" stroke="#d4af37" strokeWidth="1.2" opacity="0.9"/>
+            <ellipse cx="140" cy="18" rx="18" ry="5" stroke="#fae8b4" strokeWidth="0.7" strokeDasharray="2 2" opacity="0.6"/>
+
+            {/* Main Title */}
+            <text x="140" y="51" textAnchor="middle" fill="#ffffff" fontFamily="'Cinzel', serif" fontSize="14" letterSpacing="4" fontWeight="700">
+              THE ART OF TASTING
+            </text>
+
+            <line x1="45" y1="57" x2="235" y2="57" stroke="#d4af37" strokeWidth="0.75" opacity="0.6"/>
+
+            {/* The 5 S's Subtitle */}
+            <text x="140" y="67" textAnchor="middle" fill="#fae8b4" fontFamily="'Plus Jakarta Sans', sans-serif" fontSize="6.5" letterSpacing="2.5" fontWeight="600">
+              SEE • SWIRL • SNIFF • SIP • SAVOR
+            </text>
+          </svg>
+        </div>
+      );
+
     case 'AXR':
       // The Authentic AXR Napa Valley Modern Minimalist Architectural Logo
       return (

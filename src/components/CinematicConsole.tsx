@@ -54,7 +54,7 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
             <div className="flex items-center gap-2">
               {currentSlide.isOverview ? (
                 <span className="text-xs font-cinzel font-semibold tracking-wider text-[#d4af37] uppercase">
-                  Overview
+                  {currentSlide.producerCode === 'TASTE' ? "The 5 S's Guide" : 'Overview'}
                 </span>
               ) : (
                 <div className="flex items-center gap-1.5 bg-[#161a24] border border-[#d4af37]/40 rounded-full px-2.5 py-0.5">
@@ -126,7 +126,7 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
             <div className="bg-[#141822]/90 border border-[#d4af37]/30 rounded-lg p-2.5 mb-2.5">
               <div className="flex items-center gap-1.5 text-[10px] uppercase font-cinzel text-[#fae8b4] font-semibold tracking-wider mb-1">
                 <Sun className="w-3 h-3 text-[#d4af37]" />
-                <span>Vintage Growing Season</span>
+                <span>{currentSlide.producerCode === 'TASTE' ? 'Steps 1 & 2 • See & Swirl' : 'Vintage Growing Season'}</span>
               </div>
               <p className="text-xs text-gray-200 font-sans-clean leading-snug line-clamp-2">
                 {currentSlide.vintageWeather}
@@ -140,7 +140,7 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
             <div className="bg-[#131722]/80 border border-[#232a3a] rounded-lg p-2 flex flex-col justify-between">
               <div className="flex items-center gap-1 text-[10px] uppercase font-cinzel text-gray-400 mb-0.5">
                 <Sparkles className="w-2.5 h-2.5 text-[#d4af37]" />
-                <span>Tasting Notes</span>
+                <span>{currentSlide.producerCode === 'TASTE' ? "The 5 S's" : 'Tasting Notes'}</span>
               </div>
               <p className="text-gray-200 text-[11px] leading-tight font-sans-clean truncate">
                 {currentSlide.tastingNotes ? currentSlide.tastingNotes.slice(0, 3).join(', ') : 'Estate Profile'}
@@ -151,7 +151,7 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
             <div className="bg-[#131722]/80 border border-[#232a3a] rounded-lg p-2 flex flex-col justify-between">
               <div className="flex items-center gap-1 text-[10px] uppercase font-cinzel text-gray-400 mb-0.5">
                 <Utensils className="w-2.5 h-2.5 text-[#d4af37]" />
-                <span>Food Pairing</span>
+                <span>{currentSlide.producerCode === 'TASTE' ? 'Sip & Savor' : 'Food Pairing'}</span>
               </div>
               <p className="text-[#fae8b4] text-[11px] font-medium leading-tight font-sans-clean truncate">
                 {cleanFoodPairingText(currentSlide.foodPairing) || 'Sommelier Selection'}
@@ -166,7 +166,7 @@ export const CinematicConsole: React.FC<CinematicConsoleProps> = ({
               className="text-[11px] font-cinzel text-[#d4af37] hover:text-[#fae8b4] flex items-center gap-1 transition-colors"
             >
               <BookOpen className="w-3 h-3" />
-              <span>Full Winemaker Story</span>
+              <span>{currentSlide.producerCode === 'TASTE' ? 'Full 5 S Guide' : 'Full Winemaker Story'}</span>
             </button>
 
             <div className="flex items-center gap-1.5">

@@ -300,7 +300,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center gap-2">
                 {currentSlide.isOverview ? (
                   <span className="text-[11px] font-cinzel font-semibold tracking-wider text-[#d4af37] uppercase">
-                    Tasting Flight • Overview
+                    {currentSlide.producerCode === 'TASTE' ? "Sommelier Guide • The 5 S's" : 'Tasting Flight • Overview'}
                   </span>
                 ) : (
                   <div className="flex items-center gap-1.5 bg-[#161a24] border border-[#d4af37]/40 rounded-full px-2.5 py-0.5">
@@ -342,7 +342,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }`}
             >
               <BookOpen className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">1. Terroir</span>
+              <span className="truncate">{currentSlide.producerCode === 'TASTE' ? '1. See & Swirl' : '1. Terroir'}</span>
             </button>
 
             <button
@@ -354,7 +354,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">2. Palate</span>
+              <span className="truncate">{currentSlide.producerCode === 'TASTE' ? '2. Sniff' : '2. Palate'}</span>
             </button>
 
             <button
@@ -366,7 +366,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }`}
             >
               <Utensils className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">3. Pairing</span>
+              <span className="truncate">{currentSlide.producerCode === 'TASTE' ? '3. Sip & Savor' : '3. Pairing'}</span>
             </button>
           </div>
 
@@ -379,12 +379,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <WineryLogo producerCode={currentSlide.producerCode} className="h-12 w-auto" />
                 </div>
 
-                {/* Vintage Climate & Weather Card */}
+                {/* Vintage Climate & Weather Card (or See & Swirl on TASTE slide) */}
                 {currentSlide.vintageWeather && (
                   <div className="bg-[#141822]/95 border border-[#d4af37]/35 rounded-xl p-3.5 shadow-md">
                     <div className="flex items-center gap-1.5 text-xs text-[#fae8b4] font-cinzel font-semibold tracking-wider uppercase mb-1">
                       <Sun className="w-3.5 h-3.5 text-[#d4af37]" />
-                      <span>Vintage Climate &amp; Growing Season</span>
+                      <span>
+                        {currentSlide.producerCode === 'TASTE'
+                          ? 'Steps 1 & 2 • Sight & Aeration'
+                          : 'Vintage Climate & Growing Season'}
+                      </span>
                     </div>
                     <p className="text-xs sm:text-sm text-gray-200 font-sans-clean leading-relaxed">
                       {currentSlide.vintageWeather}
@@ -403,7 +407,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
                       <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
                         <Mountain className="w-3 h-3 text-[#d4af37]" />
-                        Elevation
+                        {currentSlide.producerCode === 'TASTE' ? 'Aroma Check' : 'Elevation'}
                       </p>
                       <p className="text-xs text-gray-200 font-medium truncate mt-0.5">{currentSlide.elevation}</p>
                     </div>
@@ -412,7 +416,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
                       <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
                         <Layers className="w-3 h-3 text-[#d4af37]" />
-                        Soil Geology
+                        {currentSlide.producerCode === 'TASTE' ? 'Palate Check' : 'Soil Geology'}
                       </p>
                       <p className="text-xs text-gray-200 font-medium truncate mt-0.5">{currentSlide.soil}</p>
                     </div>
@@ -427,7 +431,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {currentSlide.hintsOf && (
                   <div className="bg-[#141822]/95 border border-[#283244] rounded-xl p-4 shadow-inner">
                     <p className="text-[10px] uppercase font-cinzel text-[#d4af37] font-semibold tracking-widest mb-1.5">
-                      Sommelier Aromatics &amp; Hints
+                      {currentSlide.producerCode === 'TASTE' ? 'Step 3 • How to Sniff like a Sommelier' : 'Sommelier Aromatics & Hints'}
                     </p>
                     <p className="text-amber-100 font-serif italic text-base sm:text-lg leading-relaxed">
                       &ldquo;{currentSlide.hintsOf}&rdquo;
@@ -437,7 +441,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {currentSlide.tastingNotes && currentSlide.tastingNotes.length > 0 && (
                   <div className="space-y-2">
-                    <p className="text-[10px] uppercase font-cinzel text-gray-400">Palate Elements</p>
+                    <p className="text-[10px] uppercase font-cinzel text-gray-400">
+                      {currentSlide.producerCode === 'TASTE' ? "The 5 S's Checklist" : 'Palate Elements'}
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {currentSlide.tastingNotes.map((note, i) => (
                         <span
@@ -459,7 +465,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {currentSlide.foodPairing && (
                   <div className="bg-gradient-to-r from-[#191e2b]/95 to-[#131722]/95 border border-[#d4af37]/40 rounded-xl p-4 shadow-md">
                     <p className="text-[10px] uppercase font-cinzel text-[#fae8b4] font-semibold tracking-wider mb-1.5">
-                      Chef&apos;s Curated Dish
+                      {currentSlide.producerCode === 'TASTE' ? 'Steps 4 & 5 • Sip & Savor' : "Chef's Curated Dish"}
                     </p>
                     <p className="text-white text-base sm:text-lg font-medium font-sans-clean leading-snug">
                       {cleanFoodPairingText(currentSlide.foodPairing)}
@@ -470,7 +476,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {currentSlide.pairsWellWith && (
                   <div className="bg-[#141822]/80 border border-[#232b3a] rounded-xl p-3.5">
                     <p className="text-[10px] uppercase font-cinzel text-gray-400 mb-1">
-                      Pairs Well With
+                      {currentSlide.producerCode === 'TASTE' ? 'Food & Wine Chemistry' : 'Pairs Well With'}
                     </p>
                     <p className="text-gray-300 text-sm font-sans-clean leading-relaxed">
                       {currentSlide.pairsWellWith}
@@ -491,7 +497,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="flex items-center gap-2 shrink-0">
               {currentSlide.isOverview ? (
                 <span className="text-[11px] font-cinzel font-semibold tracking-wider text-[#d4af37] uppercase">
-                  Tasting Flight • Overview
+                  {currentSlide.producerCode === 'TASTE' ? "Sommelier Guide • The 5 S's" : 'Tasting Flight • Overview'}
                 </span>
               ) : (
                 <div className="flex items-center gap-2">
@@ -541,7 +547,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="bg-[#141822]/95 border border-[#d4af37]/35 rounded-lg p-4 shadow-md">
               <div className="flex items-center gap-1.5 text-xs text-[#fae8b4] font-cinzel font-semibold tracking-wider uppercase mb-1.5">
                 <Sun className="w-3.5 h-3.5 text-[#d4af37]" />
-                <span>Vintage Climate &amp; Growing Season</span>
+                <span>
+                  {currentSlide.producerCode === 'TASTE'
+                    ? 'Steps 1 & 2 • Sight & Aeration'
+                    : 'Vintage Climate & Growing Season'}
+                </span>
               </div>
               <p className="text-xs sm:text-sm text-gray-200 font-sans-clean leading-relaxed">
                 {currentSlide.vintageWeather}
@@ -555,7 +565,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="bg-[#141822]/80 border border-[#222938] rounded-lg p-3 flex items-start gap-2.5">
                 <Mountain className="w-4 h-4 text-[#d4af37] mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-[10px] uppercase font-cinzel text-gray-400">Elevation Profile</p>
+                  <p className="text-[10px] uppercase font-cinzel text-gray-400">
+                    {currentSlide.producerCode === 'TASTE' ? 'Aroma Focus' : 'Elevation Profile'}
+                  </p>
                   <p className="text-xs text-gray-200 font-medium">{currentSlide.elevation}</p>
                 </div>
               </div>
@@ -565,7 +577,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="bg-[#141822]/80 border border-[#222938] rounded-lg p-3 flex items-start gap-2.5">
                 <Layers className="w-4 h-4 text-[#d4af37] mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-[10px] uppercase font-cinzel text-gray-400">Terroir & Soil</p>
+                  <p className="text-[10px] uppercase font-cinzel text-gray-400">
+                    {currentSlide.producerCode === 'TASTE' ? 'Palate Focus' : 'Terroir & Soil'}
+                  </p>
                   <p className="text-xs text-gray-200 font-medium leading-snug">{currentSlide.soil}</p>
                 </div>
               </div>
@@ -577,13 +591,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="space-y-2.5 pt-1">
               <div className="flex items-center gap-1.5 text-xs text-gray-400 font-cinzel tracking-wider uppercase">
                 <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
-                <span>Sommelier Palate Profile</span>
+                <span>{currentSlide.producerCode === 'TASTE' ? 'Step 3 • Aromatic Tiers' : 'Sommelier Palate Profile'}</span>
               </div>
 
               {currentSlide.hintsOf && (
                 <div className="bg-[#141822]/85 border border-[#283244] rounded-lg p-3.5">
                   <p className="text-[10px] uppercase font-cinzel text-[#d4af37] tracking-wider mb-1 font-semibold">
-                    Hints Of
+                    {currentSlide.producerCode === 'TASTE' ? 'Sniffing Technique' : 'Hints Of'}
                   </p>
                   <p className="text-xs text-amber-100/95 font-serif italic leading-relaxed">
                     &ldquo;{currentSlide.hintsOf}&rdquo;
@@ -611,13 +625,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="space-y-2.5 pt-1">
               <div className="flex items-center gap-1.5 text-xs text-gray-400 font-cinzel tracking-wider uppercase">
                 <Utensils className="w-3.5 h-3.5 text-[#d4af37]" />
-                <span>Sommelier Food Pairings</span>
+                <span>{currentSlide.producerCode === 'TASTE' ? 'Steps 4 & 5 • Palate & Pairing' : 'Sommelier Food Pairings'}</span>
               </div>
 
               {currentSlide.foodPairing && (
                 <div className="bg-gradient-to-r from-[#191e2b]/95 to-[#131722]/95 border border-[#d4af37]/35 rounded-lg p-3.5 shadow-md">
                   <p className="text-[10px] uppercase font-cinzel text-[#fae8b4] font-semibold tracking-wider mb-1.5">
-                    Curated Dish &amp; Recipes
+                    {currentSlide.producerCode === 'TASTE' ? 'Sip & Savor Technique' : 'Curated Dish & Recipes'}
                   </p>
                   <div className="text-xs text-gray-200 leading-relaxed font-sans-clean">
                     {renderFormattedText(currentSlide.foodPairing)}
@@ -628,7 +642,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {currentSlide.pairsWellWith && (
                 <div className="bg-[#141822]/70 border border-[#232b3a] rounded-lg p-3">
                   <p className="text-[10px] uppercase font-cinzel text-gray-400 mb-1">
-                    Pairs Well With
+                    {currentSlide.producerCode === 'TASTE' ? 'Food & Wine Chemistry' : 'Pairs Well With'}
                   </p>
                   <p className="text-xs text-gray-300 font-sans-clean leading-snug">
                     {currentSlide.pairsWellWith}

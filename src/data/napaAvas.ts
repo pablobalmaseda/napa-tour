@@ -36,7 +36,7 @@ export const napaAvasGeoJSON: AvaFeatureCollection = {
         climate: "Warmest sub-appellation; dramatic diurnal shift",
         keyGrapes: ["Cabernet Sauvignon", "Zinfandel", "Syrah"],
         color: "#c98f32",
-        activeForSlideIds: [2]
+        activeForSlideIds: [3]
       },
       geometry: {
         type: "Polygon",
@@ -63,7 +63,7 @@ export const napaAvasGeoJSON: AvaFeatureCollection = {
         climate: "Mountain climate above fog line; volcanic tufa",
         keyGrapes: ["Cabernet Sauvignon", "Chardonnay", "Cabernet Franc"],
         color: "#d4af37",
-        activeForSlideIds: [2]
+        activeForSlideIds: [3]
       },
       geometry: {
         type: "Polygon",
@@ -89,7 +89,7 @@ export const napaAvasGeoJSON: AvaFeatureCollection = {
         climate: "Cool Pacific marine fog intrusion via Russian River & Petaluma Gap",
         keyGrapes: ["Sauvignon Blanc", "Pinot Noir", "Chardonnay"],
         color: "#5b92e5",
-        activeForSlideIds: [3]
+        activeForSlideIds: [4]
       },
       geometry: {
         type: "Polygon",
@@ -116,7 +116,7 @@ export const napaAvasGeoJSON: AvaFeatureCollection = {
         climate: "Warm central valley; heat trapped by narrow mountains",
         keyGrapes: ["Cabernet Sauvignon", "Zinfandel", "Merlot"],
         color: "#b8860b",
-        activeForSlideIds: [4, 8]
+        activeForSlideIds: [5, 9]
       },
       geometry: {
         type: "Polygon",
@@ -221,7 +221,7 @@ export const napaAvasGeoJSON: AvaFeatureCollection = {
         climate: "Cool bay breezes and morning fog; gravelly silt loam",
         keyGrapes: ["Cabernet Sauvignon", "Merlot"],
         color: "#c5a059",
-        activeForSlideIds: [5]
+        activeForSlideIds: [6]
       },
       geometry: {
         type: "Polygon",
@@ -247,7 +247,7 @@ export const napaAvasGeoJSON: AvaFeatureCollection = {
         climate: "Palisades afternoon heat radiation & cooling bay funnel breezes",
         keyGrapes: ["Cabernet Sauvignon", "Merlot"],
         color: "#e6b422",
-        activeForSlideIds: [6, 7]
+        activeForSlideIds: [7, 8]
       },
       geometry: {
         type: "Polygon",
