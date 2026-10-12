@@ -73,11 +73,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "Napa Valley Climate Dynamics: A rare Mediterranean climate (less than 0.1% of earth's surface). Marine fog from San Pablo Bay pools in low basins, creating up to 15°F temperature divergence from cool Carneros in the south to sun-drenched Calistoga in the north.",
     producerCode: "NAPA",
     imageUrl: "/wineries/napa.jpg",
-    imageCaption: "Iconic Welcome to Napa Valley Sign & Rolling Estate Vineyards",
+    imageCaption: "Outside: Iconic Welcome to Napa Valley Sign along Highway 29",
     gallery: [
-      { url: "/wineries/napa.jpg", caption: "Iconic Welcome to Napa Valley Sign along Highway 29" },
-      { url: "/wineries/napa-2.jpg", caption: "Rolling Benchland Vineyards & Mayacamas Mountain Foothills" },
-      { url: "/wineries/napa-3.jpg", caption: "Sun-Drenched Napa Valley Floor Vines at Golden Hour" }
+      { url: "/wineries/napa.jpg", caption: "Outside: Iconic Welcome to Napa Valley Sign & Oakville Vines" },
+      { url: "/wineries/napa-2.jpg", caption: "The Vines: Sun-Drenched Napa Valley Floor Vines at Golden Hour" },
+      { url: "/wineries/napa-3.jpg", caption: "Historic Landmark: 1884 Pioneer Victorian Winery Architecture in St. Helena" }
     ],
     isOverview: true,
     winemaker: "Historic & Modern Cellar Masters",
@@ -203,11 +203,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2022 Growing Season: A warm, dynamic vintage marked by an intense early September heatwave. Harvest for Schramsberg's sparkling Chardonnay was completed in late August just days before peak heat, capturing pristine natural acidity, bright citrus energy, and fresh orchard fruit before sugars surged.",
     producerCode: "SCHR",
     imageUrl: "/wineries/schramsberg.jpg",
-    imageCaption: "Historic 1870 Hand-Hewn Volcanic Aging Caves at Schramsberg",
+    imageCaption: "Outside: Historic 19th-Century Schramsberg Winery Barn on Diamond Mountain",
     gallery: [
-      { url: "/wineries/schramsberg.jpg", caption: "Historic 1870 Hand-Hewn Volcanic Aging Caves at Schramsberg" },
-      { url: "/wineries/schramsberg-2.jpg", caption: "Riddling Racks & Extended Lees Aging in Diamond Mountain Tunnels" },
-      { url: "/wineries/schramsberg-3.jpg", caption: "Traditional Method Brut Sparkling Service at the Estate" }
+      { url: "/wineries/schramsberg.jpg", caption: "Outside: Historic 19th-Century Schramsberg Winery Barn on Diamond Mountain" },
+      { url: "/wineries/schramsberg-2.jpg", caption: "Inside the Caves: Historic 1870 Hand-Hewn Volcanic Tunnels & Aging Barrels" },
+      { url: "/wineries/schramsberg-3.jpg", caption: "The Vines: Cool-Climate Sparkling Chardonnay Vineyards Overlooking the Estate Pond" }
     ],
     wineNumber: 1,
     winemaker: "Sean Thompson & Hugh Davies",
@@ -267,11 +267,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2023 Growing Season: Hailed across Sonoma and Napa as a 'vintage of the century.' Historic winter atmospheric rivers replenished deep water tables, followed by a remarkably cool, mild summer without heat spikes. Extended hang-time yielded electric natural acidity, vibrant passionfruit, and crisp mineral balance.",
     producerCode: "GRAC",
     imageUrl: "/wineries/gracianna.jpg",
-    imageCaption: "Gracianna Winery Estate along Westside Road in Russian River Valley",
+    imageCaption: "Outside: Gracianna Winery & Sunny Tasting Patio on Westside Road",
     gallery: [
-      { url: "/wineries/gracianna.jpg", caption: "Gracianna Winery Estate along Westside Road in Russian River Valley" },
-      { url: "/wineries/gracianna-2.jpg", caption: "Gracianna Tasting Room Entrance on the 'Miracle Mile' in Healdsburg" },
-      { url: "/wineries/gracianna-3.jpg", caption: "Family-Owned Estate Grounds & Riverblock Vineyard" }
+      { url: "/wineries/gracianna.jpg", caption: "Outside: Gracianna Winery & Sunny Tasting Patio on Westside Road" },
+      { url: "/wineries/gracianna-2.jpg", caption: "The Vines: Estate Vineyard Rows Along the Russian River" },
+      { url: "/wineries/gracianna-3.jpg", caption: "Unique Tradition: Gracianna's Signature 'Grateful' Named Grapevine Plaque on the Cluster" }
     ],
     wineNumber: 2,
     winemaker: "Trini Amador",
@@ -328,11 +328,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2023 Growing Season: A cool, delayed 'unicorn vintage.' Record winter rains allowed 80+ year-old heritage vines to thrive without drought stress. A mild summer pushed harvest nearly a month later than usual, producing concentrated Zinfandel with silky tannins, peppery spice, and remarkable fresh acidity.",
     producerCode: "TURL",
     imageUrl: "/wineries/turley.jpg",
-    imageCaption: "Turley Wine Cellars Estate & 80+ Year-Old Heritage Vines in St. Helena",
+    imageCaption: "Outside: Turley Wine Cellars Estate Grounds & Vintage Tractor in St. Helena",
     gallery: [
-      { url: "/wineries/turley.jpg", caption: "Turley Wine Cellars Estate & 80+ Year-Old Heritage Vines in St. Helena" },
-      { url: "/wineries/turley-2.jpg", caption: "Ancient Head-Trained Heritage Bush Vines Preserved by Turley" },
-      { url: "/wineries/turley-3.jpg", caption: "Tasting Old Vine Zinfandel in the St. Helena Cellar" }
+      { url: "/wineries/turley.jpg", caption: "Outside: Turley Wine Cellars Estate Grounds & Vintage Tractor in St. Helena" },
+      { url: "/wineries/turley-2.jpg", caption: "The Vines: Gnarled 80+ Year-Old Heritage Zinfandel Clusters on the Vine" },
+      { url: "/wineries/turley-3.jpg", caption: "Inside: Turley Tasting Room with Vintage California Bear Flag & Wood Bar" }
     ],
     wineNumber: 3,
     winemaker: "Tegan Passalacqua",
@@ -391,11 +391,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2023 Growing Season: Christian Moueix praised 2023 as one of the finest harvests of his 50-year career. Abundant winter rains nourished the dry-farmed soils. An unusually mild summer delayed harvest into late October, allowing fruit to ripen at a leisurely pace—yielding savory depth, cacao, and chiseled, polished tannins.",
     producerCode: "DOMN",
     imageUrl: "/wineries/dominus.jpg",
-    imageCaption: "Dominus Napanook Estate & Dry-Farmed Historic Vines in Yountville",
+    imageCaption: "Outside: Herzog & de Meuron Basalt Gabion Winery at Dominus Estate",
     gallery: [
-      { url: "/wineries/dominus.jpg", caption: "Dominus Estate & Herzog & de Meuron Basalt Gabion Winery in Yountville" },
-      { url: "/wineries/dominus-2.jpg", caption: "Historic Napanook Vineyard Beneath the Mayacamas Mountains" },
-      { url: "/wineries/dominus-3.jpg", caption: "Official Napanook Vineyard Parcel & Soil Zone Map (Est. 1838)" }
+      { url: "/wineries/dominus.jpg", caption: "Outside: Herzog & de Meuron Basalt Rock Gabion Winery Rising from the Vineyard" },
+      { url: "/wineries/dominus-2.jpg", caption: "The Vines: 100% Dry-Farmed Napanook Vineyard Beneath the Mayacamas Mountains" },
+      { url: "/wineries/dominus-3.jpg", caption: "Inside: Dominus Estate French Oak Barrel & Concrete Cellar" }
     ],
     wineNumber: 4,
     winemaker: "Christian Moueix & Tod Mostero",
@@ -452,11 +452,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2022 Growing Season: Dry winter followed by a temperate summer and an intense 10-day Labor Day heat dome exceeding 110°F. Stags Leap District was saved by daily cooling marine breezes funneled from San Pablo Bay, preserving balancing acidity beneath plush, concentrated dark berry fruit.",
     producerCode: "SLWC",
     imageUrl: "/wineries/stagsleap.jpg",
-    imageCaption: "Stag's Leap Wine Cellars Estate & Vineyard Table in Stags Leap District",
+    imageCaption: "Outside: Stag's Leap Wine Cellars Stone & Glass Visitor Center",
     gallery: [
-      { url: "/wineries/stagsleap.jpg", caption: "Stag's Leap Wine Cellars Estate & Vineyard Table in Stags Leap District" },
-      { url: "/wineries/stagsleap-2.jpg", caption: "Historic S.L.V. & FAY Vineyards Beneath the Volcanic Stags Leap Palisades" },
-      { url: "/wineries/stagsleap-3.jpg", caption: "Overlooking the Estate Vineyards from the FAY Outlook Visitor Center" }
+      { url: "/wineries/stagsleap.jpg", caption: "Outside: Stag's Leap Wine Cellars Stone & Glass Visitor Center" },
+      { url: "/wineries/stagsleap-2.jpg", caption: "The Vines: Historic S.L.V. & FAY Vineyards Beneath the Volcanic Stags Leap Palisades" },
+      { url: "/wineries/stagsleap-3.jpg", caption: "Inside the Caves: The Iconic Curved Stone Arcade Entrance to the Underground Cellars" }
     ],
     wineNumber: 5,
     winemaker: "Marcus Notaro",
@@ -513,11 +513,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2023 Growing Season: A near-mythic growing season on Shafer's hillside amphitheater. Steady winter rainfall gave vines vigor, followed by mild summer sun and cool nights. Unprecedented long hang-time into late autumn allowed hillside grapes to achieve complete phenolic ripeness, packing blackberry concentration and velvety tannins.",
     producerCode: "SHAF",
     imageUrl: "/wineries/shafer.jpg",
-    imageCaption: "Shafer Vineyards Steep Hillside Terraces & Winery Facility",
+    imageCaption: "Outside: Shafer Vineyards Winery Nestled Against the Stags Leap Hillside Knolls",
     gallery: [
-      { url: "/wineries/shafer.jpg", caption: "Shafer Vineyards Steep Hillside Amphitheater in Stags Leap District" },
-      { url: "/wineries/shafer-2.jpg", caption: "Sun-Drenched Volcanic Knolls Surrounding the Shafer Winery" },
-      { url: "/wineries/shafer-3.jpg", caption: "Private Collector Tasting Salon Overlooking Hillside Select Blocks" }
+      { url: "/wineries/shafer.jpg", caption: "Outside: Shafer Vineyards Winery Nestled Against the Stags Leap Hillside Knolls" },
+      { url: "/wineries/shafer-2.jpg", caption: "The Vines: Shafer's Steep Hillside Amphitheater Vineyard Terraces" },
+      { url: "/wineries/shafer-3.jpg", caption: "Inside: Shafer Vineyards French Oak Barrel Aging Cellar" }
     ],
     wineNumber: 6,
     winemaker: "Elias Fernandez & Doug Shafer",
@@ -574,11 +574,11 @@ export const slides: WineSlide[] = [
     vintageWeather: "2016 Growing Season: Rated 98 points and universally regarded as a modern benchmark vintage for Napa Valley. Near-perfect conditions throughout: steady winter rain, uniform spring budbreak, and a mild, sunny summer without heatwaves gave Jean Hoefliger ideal hang-time. A decade of bottle age has softened this into pure velvet.",
     producerCode: "AXR",
     imageUrl: "/wineries/axr.jpg",
-    imageCaption: "AXR Napa Valley — Historic 1880s Victorian Estate & Redwoods in St. Helena",
+    imageCaption: "Outside: Historic 1880s Victorian Manor House at AXR Napa Valley",
     gallery: [
-      { url: "/wineries/axr.jpg", caption: "AXR Napa Valley — Historic 1880s Victorian Estate & Redwoods in St. Helena" },
-      { url: "/wineries/axr-2.jpg", caption: "Estate Cabernet Vineyard Rows Bordering Ancient St. Helena Redwoods" },
-      { url: "/wineries/axr-3.jpg", caption: "The Historic Pre-Prohibition Manor House & Speakeasy Grounds at AXR" }
+      { url: "/wineries/axr.jpg", caption: "Outside: Historic 1880s Victorian Manor House at AXR Napa Valley" },
+      { url: "/wineries/axr-2.jpg", caption: "The Vines: Estate Cabernet Sauvignon Rows Bordering Ancient St. Helena Redwoods" },
+      { url: "/wineries/axr-3.jpg", caption: "Inside: The Historic Victorian Parlor & Private Tasting Salon at AXR" }
     ],
     wineNumber: 7,
     winemaker: "Jean Hoefliger",
