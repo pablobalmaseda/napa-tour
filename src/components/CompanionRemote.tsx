@@ -32,6 +32,7 @@ export const CompanionRemote: React.FC = () => {
     setActiveTab: setTvTab,
     photoIndex,
     isLightboxOpen,
+    setPhotoState,
     nextPhoto,
     prevPhoto,
     toggleLightbox,
@@ -136,12 +137,23 @@ export const CompanionRemote: React.FC = () => {
     const diffX = touchStartX.current - e.changedTouches[0].clientX;
     const diffY = touchStartY.current - e.changedTouches[0].clientY;
 
-    // Ensure it was an intentional horizontal swipe rather than a vertical scroll
-    if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY) * 2.5) {
-      if (diffX > 0) {
-        nextSlide();
-      } else {
-        prevSlide();
+    if (isLightboxOpen) {
+      // When full-screen photos are open, swiping left/right on the phone swipes photos on TV!
+      if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+        if (diffX > 0) {
+          nextPhoto();
+        } else {
+          prevPhoto();
+        }
+      }
+    } else {
+      // Otherwise, intentional horizontal swipe changes the wine stop
+      if (Math.abs(diffX) > 80 && Math.abs(diffX) > Math.abs(diffY) * 2.5) {
+        if (diffX > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
       }
     }
 
@@ -150,6 +162,11 @@ export const CompanionRemote: React.FC = () => {
   };
 
   const currentSlide = slides[currentSlideIndex];
+  const currentPhotos =
+    currentSlide.gallery && currentSlide.gallery.length > 0
+      ? currentSlide.gallery
+      : [{ url: currentSlide.imageUrl, caption: currentSlide.imageCaption }];
+  const activePhoto = currentPhotos[photoIndex] || currentPhotos[0];
   const nextSlideData = currentSlideIndex < slides.length - 1 ? slides[currentSlideIndex + 1] : null;
   const notes = currentSlide.speakerNotes;
 
@@ -721,6 +738,96 @@ export const CompanionRemote: React.FC = () => {
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Photo Swipe Controller Modal (Opens on Phone & TV simultaneously) */}
+      {isLightboxOpen && currentSlide.producerCode !== 'TASTE' && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col justify-between p-4 animate-in fade-in duration-150 select-none"
+        >
+          {/* Top Bar */}
+          <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#d4af37] animate-pulse" />
+                <span className="text-[10px] font-cinzel uppercase tracking-widest text-[#d4af37] font-bold">
+                  Live on TV Screen • Photo {photoIndex + 1} of {currentPhotos.length}
+                </span>
+              </div>
+              <h3 className="font-serif-luxury text-base text-white truncate mt-0.5">
+                {currentSlide.title}
+              </h3>
+            </div>
+
+            <button
+              onClick={() => setPhotoState(photoIndex, false)}
+              className="px-3 py-1.5 rounded-xl bg-[#1c2230] border border-[#d4af37]/50 text-[#fae8b4] text-xs font-bold flex items-center gap-1.5 active:scale-95 shrink-0"
+            >
+              <X className="w-4 h-4" />
+              <span>Close TV Pic</span>
+            </button>
+          </div>
+
+          {/* Center Swipeable Photo Preview & Caption */}
+          <div className="flex-1 flex flex-col items-center justify-center my-3 overflow-hidden">
+            <div className="relative w-full max-h-[48vh] rounded-2xl overflow-hidden border border-[#d4af37]/40 bg-[#0b0e14] shadow-2xl flex items-center justify-center">
+              <img
+                src={activePhoto.url}
+                alt={activePhoto.caption}
+                className="w-full h-full max-h-[48vh] object-contain"
+                draggable={false}
+              />
+            </div>
+
+            <p className="text-xs sm:text-sm text-[#fae8b4] font-sans-clean text-center mt-3 px-2 leading-snug">
+              {activePhoto.caption}
+            </p>
+            <p className="text-[11px] text-gray-400 font-mono mt-1.5">
+              ← Swipe photo left or right to change on TV →
+            </p>
+          </div>
+
+          {/* Bottom Thumbnails & Prev/Next Photo Controls */}
+          <div className="space-y-3 pt-2 border-t border-white/10">
+            {/* 3 Thumbnails */}
+            <div className="grid grid-cols-3 gap-2">
+              {currentPhotos.map((photo, idx) => (
+                <button
+                  key={photo.url}
+                  onClick={() => setPhotoState(idx, true)}
+                  className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all ${
+                    idx === photoIndex
+                      ? 'border-[#d4af37] scale-[1.02] shadow-lg'
+                      : 'border-white/10 opacity-50'
+                  }`}
+                >
+                  <img src={photo.url} alt="" className="w-full h-full object-cover" />
+                  <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/75 text-[10px] font-mono text-[#fae8b4]">
+                    #{idx + 1}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Prev / Next Photo Buttons */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={prevPhoto}
+                className="flex-1 py-3 px-4 rounded-xl bg-[#1a202d] border border-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 active:scale-95"
+              >
+                <ChevronLeft className="w-5 h-5 text-[#d4af37]" />
+                <span>Prev Pic</span>
+              </button>
+              <button
+                onClick={nextPhoto}
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b39129] text-black font-bold text-sm flex items-center justify-center gap-2 active:scale-95"
+              >
+                <span>Next Pic</span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>

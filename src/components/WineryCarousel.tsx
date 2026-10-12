@@ -128,7 +128,10 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
   return (
     <>
       <div
-        onClick={() => setIsLightboxOpen(true)}
+        onClick={() => {
+          setIsLightboxOpen(true);
+          notifyRemotePhotoState(activeIndex, true);
+        }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={`group relative ${heightClass} w-full rounded-xl overflow-hidden border border-[#d4af37]/40 shadow-lg cursor-pointer bg-[#121620] select-none`}
@@ -202,7 +205,10 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => setActiveIndex(idx)}
+                  onClick={() => {
+                    setActiveIndex(idx);
+                    notifyRemotePhotoState(idx, isLightboxOpen);
+                  }}
                   className={`h-1.5 rounded-full transition-all ${
                     idx === activeIndex
                       ? 'w-4 bg-[#d4af37]'
@@ -220,7 +226,10 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
       {isLightboxOpen &&
         createPortal(
           <div
-            onClick={() => setIsLightboxOpen(false)}
+            onClick={() => {
+              setIsLightboxOpen(false);
+              notifyRemotePhotoState(activeIndex, false);
+            }}
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-6 animate-in fade-in duration-200 select-none"
           >
             <div
@@ -230,7 +239,10 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
               {/* Close Button */}
               <button
                 type="button"
-                onClick={() => setIsLightboxOpen(false)}
+                onClick={() => {
+                  setIsLightboxOpen(false);
+                  notifyRemotePhotoState(activeIndex, false);
+                }}
                 className="absolute top-4 right-4 z-20 p-2 rounded-xl bg-black/75 border border-white/20 text-gray-200 hover:text-[#d4af37] transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -285,7 +297,10 @@ export const WineryCarousel: React.FC<WineryCarouselProps> = ({
                       <button
                         key={photo.url}
                         type="button"
-                        onClick={() => setActiveIndex(idx)}
+                        onClick={() => {
+                          setActiveIndex(idx);
+                          notifyRemotePhotoState(idx, isLightboxOpen);
+                        }}
                         className={`w-16 h-11 rounded-lg overflow-hidden border-2 transition-all ${
                           idx === activeIndex
                             ? 'border-[#d4af37] scale-105 shadow-md'
