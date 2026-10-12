@@ -33,18 +33,19 @@ function encodeMqttString(str: string): Uint8Array {
   return out;
 }
 
-function concatUint8(arrays: Uint8Array[]): Uint8Array {
+function concatUint8(arrays: Uint8Array[]): ArrayBuffer {
   const total = arrays.reduce((acc, a) => acc + a.length, 0);
-  const out = new Uint8Array(total);
+  const buf = new ArrayBuffer(total);
+  const out = new Uint8Array(buf);
   let offset = 0;
   for (const a of arrays) {
     out.set(a, offset);
     offset += a.length;
   }
-  return out;
+  return buf;
 }
 
-function buildMqttConnect(clientId: string): Uint8Array {
+function buildMqttConnect(clientId: string): ArrayBuffer {
   const proto = encodeMqttString('MQTT');
   const flags = new Uint8Array([4, 2, 0, 60]); // MQTT 3.1.1, CleanSession, 60s KeepAlive
   const payload = encodeMqttString(clientId);
@@ -52,7 +53,7 @@ function buildMqttConnect(clientId: string): Uint8Array {
   return concatUint8([new Uint8Array([0x10, ...encodeMqttLength(remLen)]), proto, flags, payload]);
 }
 
-function buildMqttSubscribe(topic: string): Uint8Array {
+function buildMqttSubscribe(topic: string): ArrayBuffer {
   const packetId = new Uint8Array([0x00, 0x01]);
   const topicBuf = encodeMqttString(topic);
   const qos = new Uint8Array([0x00]);
@@ -60,7 +61,7 @@ function buildMqttSubscribe(topic: string): Uint8Array {
   return concatUint8([new Uint8Array([0x82, ...encodeMqttLength(remLen)]), packetId, topicBuf, qos]);
 }
 
-function buildMqttPublish(topic: string, message: string, retain = false): Uint8Array {
+function buildMqttPublish(topic: string, message: string, retain = false): ArrayBuffer {
   const topicBuf = encodeMqttString(topic);
   const msgBuf = new TextEncoder().encode(message);
   const remLen = topicBuf.length + msgBuf.length;
@@ -263,7 +264,7 @@ export function usePresentationSync(
           // MQTT KeepAlive Ping + Presence Heartbeat every 20s
           keepAliveInterval = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
-              ws.send(new Uint8Array([0xc0, 0x00])); // MQTT PINGREQ
+              ws.send(new Uint8Array([0xc0, 0x00]).buffer); // MQTT PINGREQ
               const presenceMsg: SyncMessage = {
                 type: 'PING_PRESENCE',
                 senderId: senderIdRef.current,
