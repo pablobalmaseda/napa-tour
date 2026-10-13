@@ -163,8 +163,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Tab Content Display Area (Zero-Scroll Pill Layout) */}
-        <div className="flex-1 flex flex-col justify-center overflow-hidden">
-          {/* Tab 1: Terroir (Photo Carousel + 2x2 Compact Pill Grid) */}
+        <div className="flex-1 flex flex-col justify-start overflow-y-auto pr-0.5">
+          {/* Tab 1: Terroir (Photo Carousel + Compact Pill Grid) */}
           {activeTab === 'story' && (
             <div className="space-y-3 animate-in fade-in duration-200">
               {isTasteSlide ? (
@@ -222,7 +222,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Tab 2: Palate Profile (Compact Pills, Zero Scroll) */}
           {activeTab === 'palate' && (
-            <div className="space-y-2.5 animate-in fade-in duration-200">
+            <div className="space-y-2 animate-in fade-in duration-200">
               {/* Full-Width Varietal & Aging Pill */}
               {!currentSlide.isOverview && (
                 <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
@@ -249,17 +249,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
               )}
 
-              {/* Tasting Note Pills in a 2-column pill grid */}
+              {/* Tasting Note Pills in a compact 3-column pill grid */}
               {currentSlide.tastingNotes && currentSlide.tastingNotes.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <p className="text-[10px] uppercase font-cinzel text-gray-400">
                     {isTasteSlide ? "The 5 S's Tasting Framework" : 'Key Palate & Aroma Notes'}
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-1.5">
                     {currentSlide.tastingNotes.slice(0, 6).map((note, i) => (
                       <div
                         key={i}
-                        className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5 flex items-center gap-2"
+                        className="bg-[#141822]/90 border border-[#232b3a] rounded-lg px-2.5 py-2 flex items-center gap-1.5"
                       >
                         <Sparkles className="w-3 h-3 text-[#d4af37] shrink-0" />
                         <span className="text-xs text-amber-100 font-medium truncate">{note}</span>
@@ -269,14 +269,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
               )}
 
-              {/* Compact Sommelier Summary Pill */}
+              {/* Full Sommelier Summary Pill (No line-clamp cutoff) */}
               {currentSlide.hintsOf && (
                 <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
                   <p className="text-[10px] uppercase font-cinzel text-[#d4af37] flex items-center gap-1">
                     <Sparkles className="w-3 h-3 text-[#d4af37] shrink-0" />
                     <span>{isTasteSlide ? 'Sommelier Technique' : 'Bouquet & Finish'}</span>
                   </p>
-                  <p className="text-xs text-gray-200 font-serif italic line-clamp-2 mt-0.5">
+                  <p className="text-xs text-gray-200 font-serif italic leading-snug mt-0.5">
                     &ldquo;{currentSlide.hintsOf}&rdquo;
                   </p>
                 </div>
@@ -315,20 +315,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Bottom Sticky Navigation Footer (No Shortcut Hint Row Below Buttons) */}
-      <footer className="p-4 sm:p-5 border-t border-[#1c222e] bg-[#0c0e13]/95 backdrop-blur-md space-y-2.5">
-        {/* Step indicator bar */}
-        <div className="w-full bg-[#1c222e] h-1.5 rounded-full overflow-hidden flex">
-          {slides.map((_, idx) => (
-            <div
-              key={idx}
-              className={`flex-1 h-full transition-all duration-500 border-r border-[#0c0e13] ${
-                idx <= currentSlideIndex ? 'bg-[#d4af37]' : 'bg-transparent'
-              }`}
-            />
-          ))}
-        </div>
-
+      {/* Bottom Sticky Navigation Footer (No Progress Bar & No Shortcut Hint Row) */}
+      <footer className="px-5 py-3 border-t border-[#1c222e] bg-[#0c0e13]/95 backdrop-blur-md">
         {/* Navigation Action Buttons */}
         <div className="flex items-center justify-between gap-3">
           <button
