@@ -249,20 +249,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
               )}
 
-              {/* Tasting Note Pills in a compact 3-column pill grid */}
+              {/* Tasting Note Pills */}
               {currentSlide.tastingNotes && currentSlide.tastingNotes.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-[10px] uppercase font-cinzel text-gray-400">
                     {isTasteSlide ? "The 5 S's Tasting Framework" : 'Key Palate & Aroma Notes'}
                   </p>
-                  <div className="grid grid-cols-3 gap-1.5">
+                  <div className={`grid ${currentSlide.isOverview ? 'grid-cols-2' : 'grid-cols-3'} gap-1.5`}>
                     {currentSlide.tastingNotes.slice(0, 6).map((note, i) => (
                       <div
                         key={i}
                         className="bg-[#141822]/90 border border-[#232b3a] rounded-lg px-2.5 py-2 flex items-center gap-1.5"
                       >
                         <Sparkles className="w-3 h-3 text-[#d4af37] shrink-0" />
-                        <span className="text-xs text-amber-100 font-medium truncate">{note}</span>
+                        <span className={`text-xs text-amber-100 font-medium ${currentSlide.isOverview ? 'leading-snug' : 'truncate'}`}>
+                          {note}
+                        </span>
                       </div>
                     ))}
                   </div>
