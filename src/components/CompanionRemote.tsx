@@ -118,12 +118,47 @@ export const CompanionRemote: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Toggle checklist items
-  const toggleCheckPoint = (key: string) => {
-    setCheckedPoints((prev) => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+  // Toggle checklist items (and auto-advance the 5 S's on the TV when on the TASTE slide)
+  const toggleCheckPoint = (key: string, idx?: number) => {
+    const slide = slides[currentSlideIndex];
+    const willBeChecked = !checkedPoints[key];
+    const nextChecked = {
+      ...checkedPoints,
+      [key]: willBeChecked
+    };
+    setCheckedPoints(nextChecked);
+
+    if (slide?.producerCode === 'TASTE' && typeof idx === 'number') {
+      const totalSteps = 5;
+      let targetStep = idx;
+
+      if (willBeChecked) {
+        let foundNext = -1;
+        for (let i = idx + 1; i < totalSteps; i++) {
+          if (!nextChecked[`${slide.id}-tp-${i}`]) {
+            foundNext = i;
+            break;
+          }
+        }
+        if (foundNext === -1) {
+          for (let i = 0; i < totalSteps; i++) {
+            if (!nextChecked[`${slide.id}-tp-${i}`]) {
+              foundNext = i;
+              break;
+            }
+          }
+        }
+        targetStep = foundNext !== -1 ? foundNext : Math.min(idx + 1, totalSteps - 1);
+      } else {
+        targetStep = idx;
+      }
+
+      setPhotoState(targetStep, false);
+      const nextTvTab = targetStep <= 1 ? 'story' : targetStep === 2 ? 'palate' : 'food';
+      if (tvTab !== nextTvTab) {
+        setTvTab(nextTvTab);
+      }
+    }
   };
 
   // Touch Swipe Handlers
@@ -313,19 +348,25 @@ export const CompanionRemote: React.FC = () => {
                   Key Talking Points
                 </span>
                 <span className="text-[10px] text-gray-400">
-                  Tap to check off
+                  {currentSlide.producerCode === 'TASTE'
+                    ? 'Check off to advance 5 S’s on TV'
+                    : 'Tap to check off'}
                 </span>
               </div>
               {notes?.talkingPoints?.map((point, idx) => {
                 const key = `${currentSlide.id}-tp-${idx}`;
                 const isChecked = !!checkedPoints[key];
+                const isActiveOnTv =
+                  currentSlide.producerCode === 'TASTE' && photoIndex === idx;
                 return (
                   <div
                     key={idx}
-                    onClick={() => toggleCheckPoint(key)}
+                    onClick={() => toggleCheckPoint(key, idx)}
                     className={`flex items-start gap-3 p-2.5 rounded-xl transition-all cursor-pointer ${
                       isChecked 
                         ? 'bg-emerald-950/20 border border-emerald-800/30 text-gray-400 line-through' 
+                        : isActiveOnTv
+                        ? 'bg-[#1f2538] border border-[#d4af37] text-white shadow-[0_0_15px_rgba(212,175,55,0.15)]'
                         : 'bg-[#181c2b] border border-white/5 hover:border-white/10 text-gray-200'
                     }`}
                   >
@@ -334,7 +375,14 @@ export const CompanionRemote: React.FC = () => {
                     ) : (
                       <Circle className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
                     )}
-                    <span className="text-xs leading-relaxed">{point}</span>
+                    <div className="flex-1 min-w-0">
+                      {isActiveOnTv && !isChecked && (
+                        <span className="inline-block text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d4af37] text-black mb-1">
+                          Showing on TV
+                        </span>
+                      )}
+                      <span className="text-xs leading-relaxed block">{point}</span>
+                    </div>
                   </div>
                 );
               })}

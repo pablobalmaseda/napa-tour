@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, Wind, Sparkles, Wine, Clock } from 'lucide-react';
 
 interface TastingStep {
@@ -92,7 +92,30 @@ const FIVE_S_STEPS: TastingStep[] = [
 
 export const TastingSkyVisual: React.FC = () => {
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
-  const activeStep = FIVE_S_STEPS[selectedIdx];
+
+  useEffect(() => {
+    const handleStepSync = (e: Event) => {
+      const detail = (e as CustomEvent<{ photoIndex?: number }>).detail;
+      if (detail && typeof detail.photoIndex === 'number') {
+        const clamped = Math.min(Math.max(0, detail.photoIndex), FIVE_S_STEPS.length - 1);
+        setSelectedIdx(clamped);
+      }
+    };
+
+    window.addEventListener('wine-photo-sync', handleStepSync);
+    return () => window.removeEventListener('wine-photo-sync', handleStepSync);
+  }, []);
+
+  const handleSelectStep = (idx: number) => {
+    setSelectedIdx(idx);
+    window.dispatchEvent(
+      new CustomEvent('wine-photo-sync-request', {
+        detail: { photoIndex: idx, isLightboxOpen: false }
+      })
+    );
+  };
+
+  const activeStep = FIVE_S_STEPS[selectedIdx] || FIVE_S_STEPS[0];
 
   const renderStepIllustration = (stepId: TastingStep['id'], isLarge = false) => {
     const sizeClass = isLarge ? 'w-24 h-24' : 'w-12 h-12';
@@ -243,7 +266,7 @@ export const TastingSkyVisual: React.FC = () => {
           return (
             <button
               key={step.id}
-              onClick={() => setSelectedIdx(idx)}
+              onClick={() => handleSelectStep(idx)}
               className={`group text-left rounded-2xl p-2.5 sm:p-3 transition-all duration-300 flex flex-col justify-between border backdrop-blur-xl ${
                 isSelected
                   ? 'bg-gradient-to-b from-[#1d2333]/95 to-[#121622]/95 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.25)] -translate-y-1'

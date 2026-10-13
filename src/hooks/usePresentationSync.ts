@@ -572,11 +572,11 @@ export function usePresentationSync(
     [broadcastFullState]
   );
 
-  // Control Winery Photo Carousel & Fullscreen Lightbox on the TV
+  // Control Winery Photo Carousel, Fullscreen Lightbox, or 5 S's Step (0..4) on the TV
   const setPhotoState = useCallback(
     (nextPhotoIdx?: number, nextLightbox?: boolean) => {
       const resolvedIdx =
-        typeof nextPhotoIdx === 'number' ? ((nextPhotoIdx % 3) + 3) % 3 : photoIndexRef.current;
+        typeof nextPhotoIdx === 'number' ? Math.max(0, nextPhotoIdx) : photoIndexRef.current;
       const resolvedLightbox =
         typeof nextLightbox === 'boolean' ? nextLightbox : isLightboxOpenRef.current;
 
