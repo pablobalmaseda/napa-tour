@@ -16,8 +16,7 @@ import {
   BookOpen,
   Sun,
   User,
-  Landmark,
-  Calendar
+  Landmark
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -236,28 +235,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Tab 2: Palate Profile (Compact Pills, Zero Scroll) */}
           {activeTab === 'palate' && (
             <div className="space-y-3 animate-in fade-in duration-200">
-              {/* 2-Column Wine Spec Pills matching Elevation & Soil style */}
+              {/* Full-Width Varietal & Aging Pill */}
               {!currentSlide.isOverview && (
-                <div className="grid grid-cols-2 gap-2.5">
-                  <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
-                    <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
-                      <Wine className="w-3 h-3 text-[#d4af37] shrink-0" />
-                      <span>Varietal & Aging</span>
-                    </p>
-                    <p className="text-xs text-gray-200 font-medium truncate mt-0.5">
-                      {currentSlide.varietal || currentSlide.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
-                    <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-[#d4af37] shrink-0" />
-                      <span>Vintage & AVA</span>
-                    </p>
-                    <p className="text-xs text-gray-200 font-medium truncate mt-0.5">
-                      {currentSlide.vintageYear} • {currentSlide.region}
-                    </p>
-                  </div>
+                <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
+                  <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
+                    <Wine className="w-3 h-3 text-[#d4af37] shrink-0" />
+                    <span>Varietal & Aging</span>
+                  </p>
+                  <p className="text-xs text-gray-200 font-medium mt-0.5 leading-snug">
+                    {currentSlide.varietal || currentSlide.subtitle}
+                  </p>
                 </div>
               )}
 
