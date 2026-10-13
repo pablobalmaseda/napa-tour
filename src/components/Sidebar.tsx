@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 />
               )}
 
-              {/* 2x2 Compact Terroir Pills matching Elevation & Soil Pill styling */}
+              {/* Compact Terroir Pills (Zero Cutoff) */}
               <div className="grid grid-cols-2 gap-2.5">
                 {currentSlide.elevation && (
                   <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
@@ -187,7 +187,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <Mountain className="w-3 h-3 text-[#d4af37] shrink-0" />
                       <span>{isTasteSlide ? 'Aroma Check' : 'Elevation'}</span>
                     </p>
-                    <p className="text-xs text-gray-200 font-medium truncate mt-0.5">
+                    <p className="text-xs text-gray-200 font-medium leading-snug mt-0.5">
                       {currentSlide.elevation}
                     </p>
                   </div>
@@ -199,31 +199,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <Layers className="w-3 h-3 text-[#d4af37] shrink-0" />
                       <span>{isTasteSlide ? 'Palate Check' : 'Soil Geology'}</span>
                     </p>
-                    <p className="text-xs text-gray-200 font-medium truncate mt-0.5">
+                    <p className="text-xs text-gray-200 font-medium leading-snug mt-0.5">
                       {currentSlide.soil}
                     </p>
                   </div>
                 )}
 
-                {currentSlide.weatherPill && (
-                  <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
-                    <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
-                      <Sun className="w-3 h-3 text-[#d4af37] shrink-0" />
-                      <span>{isTasteSlide ? 'Sight & Swirl' : 'Vintage Climate'}</span>
-                    </p>
-                    <p className="text-xs text-gray-200 font-medium truncate mt-0.5">
-                      {currentSlide.weatherPill}
-                    </p>
-                  </div>
-                )}
-
                 {currentSlide.estatePill && (
-                  <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
+                  <div className="col-span-2 bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
                     <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
                       <Landmark className="w-3 h-3 text-[#d4af37] shrink-0" />
                       <span>{isTasteSlide ? 'Sequence' : 'Estate Highlight'}</span>
                     </p>
-                    <p className="text-xs text-gray-200 font-medium truncate mt-0.5">
+                    <p className="text-xs text-gray-200 font-medium leading-snug mt-0.5">
                       {currentSlide.estatePill}
                     </p>
                   </div>
@@ -234,7 +222,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Tab 2: Palate Profile (Compact Pills, Zero Scroll) */}
           {activeTab === 'palate' && (
-            <div className="space-y-3 animate-in fade-in duration-200">
+            <div className="space-y-2.5 animate-in fade-in duration-200">
               {/* Full-Width Varietal & Aging Pill */}
               {!currentSlide.isOverview && (
                 <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
@@ -244,6 +232,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </p>
                   <p className="text-xs text-gray-200 font-medium mt-0.5 leading-snug">
                     {currentSlide.varietal || currentSlide.subtitle}
+                  </p>
+                </div>
+              )}
+
+              {/* Full-Width Vintage Climate Pill (moved from Terroir for full readability) */}
+              {currentSlide.weatherPill && (
+                <div className="bg-[#141822]/90 border border-[#232b3a] rounded-lg p-2.5">
+                  <p className="text-[10px] uppercase font-cinzel text-gray-400 flex items-center gap-1">
+                    <Sun className="w-3 h-3 text-[#d4af37] shrink-0" />
+                    <span>{isTasteSlide ? 'Sight & Swirl' : 'Vintage Climate'}</span>
+                  </p>
+                  <p className="text-xs text-gray-200 font-medium mt-0.5 leading-snug">
+                    {currentSlide.weatherPill}
                   </p>
                 </div>
               )}
