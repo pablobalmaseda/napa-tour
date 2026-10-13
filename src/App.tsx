@@ -23,15 +23,11 @@ export const App: React.FC = () => {
   const [isPairingOpen, setIsPairingOpen] = useState(false);
   const [showCinemaRoute, setShowCinemaRoute] = useState(false);
 
-  // Layout mode: 'v1-scroll' (Classic), 'v2-tabs' (TV Tabbed Sidebar), 'v2-cinema' (Cinematic Lower-Third)
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
-    const saved = localStorage.getItem('napa_layout_mode') as LayoutMode | null;
-    return saved || 'v2-tabs';
-  });
+  // Layout mode: locked to 'v2-tabs' (TV Tabbed Sidebar) per user preference
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('v2-tabs');
 
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);
-    localStorage.setItem('napa_layout_mode', mode);
   };
 
   // Global Keyboard Navigation (Clickers, Space, Arrows, 1/2/3 Tabs, V for View mode)

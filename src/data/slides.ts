@@ -24,6 +24,8 @@ export interface SpeakerNotes {
 export interface WineSlide {
   id: number;
   title: string;
+  wineryName?: string;
+  wineName?: string;
   subtitle: string;
   region: string;
   coordinates: [number, number]; // [lng, lat]
@@ -36,6 +38,8 @@ export interface WineSlide {
   varietal?: string;
   elevation?: string;
   soil?: string;
+  weatherPill?: string;
+  estatePill?: string;
   hintsOf?: string;
   tastingNotes?: string[];
   foodPairing?: string;
@@ -57,6 +61,8 @@ export const slides: WineSlide[] = [
   {
     id: 1,
     title: "Welcome to Napa Valley",
+    wineryName: "Welcome to Napa Valley",
+    wineName: "7-Stop Curated Tasting Flight",
     subtitle: "A Journey of Terroir",
     region: "Napa Valley, CA",
     coordinates: [-122.33, 38.40],
@@ -67,7 +73,9 @@ export const slides: WineSlide[] = [
     vintageYear: "Overview",
     varietal: "Terroir & Regional Geography",
     elevation: "Sea level to 2,600+ ft",
-    soil: "33 distinct soil series across Napa & Russian River",
+    soil: "33 distinct soil series (Half of earth's soil orders)",
+    weatherPill: "Mediterranean Climate • 15°F Bay-to-Calistoga Swing",
+    estatePill: "30 Miles Long × 5 Miles Wide • 1968 Ag Preserve",
     hintsOf: "A curated tasting flight tracing elevation, fog corridors, and soil geology across seven distinctive expressions.",
     tastingNotes: ["Elevation Gradient", "Marine Fog Intrusion", "Volcanic Benchlands", "Ancient Heritage Vines"],
     vintageWeather: "Napa Valley Climate Dynamics: A rare Mediterranean climate (less than 0.1% of earth's surface). Marine fog from San Pablo Bay pools in low basins, creating up to 15°F temperature divergence from cool Carneros in the south to sun-drenched Calistoga in the north.",
@@ -120,6 +128,8 @@ export const slides: WineSlide[] = [
   {
     id: 2,
     title: "How to Taste Wine",
+    wineryName: "How to Taste Wine",
+    wineName: "The 5 S's: See • Swirl • Sniff • Sip • Savor",
     subtitle: "The 5 S's • Wine Enthusiast Method",
     region: "Sommelier Sensory Guide",
     coordinates: [-122.40, 38.46],
@@ -129,8 +139,10 @@ export const slides: WineSlide[] = [
     story: "Before our first pour, Wine Enthusiast distills professional wine appreciation into five essential sensory steps—the '5 S's': See, Swirl, Sniff, Sip, and Savor. Following this sequence unlocks hidden aromatics, reveals how Napa's sun and cool fog shape structure on your palate, and turns casual drinking into true tasting.",
     vintageYear: "Guide",
     varietal: "See • Swirl • Sniff • Sip • Savor",
-    elevation: "3. Sniff: Fruit, Oak & Age",
-    soil: "4. Sip & 5. Savor: Acid, Tannin & Finish",
+    elevation: "1. See: Tilt 45° for Hue & Rim Age",
+    soil: "2. Swirl: 5s Tabletop Swirl for Esters",
+    weatherPill: "3. Sniff: Primary Fruit, Oak & Cellar Age",
+    estatePill: "4. Sip & 5. Savor: Acid Tingle vs. Tannin Grip",
     hintsOf: "3. SNIFF (The 3 Aroma Tiers): Place your nose at the rim and take two short inhales. Identify Primary aromas (fresh fruit, citrus, herbs from the grape), Secondary aromas (brioche from yeast lees, vanilla & baking spice from oak barrels), and Tertiary aromas (savory earth, cedar, dried tea & leather from bottle aging).",
     tastingNotes: [
       "1. See (Color, Rim & Legs)",
@@ -186,6 +198,10 @@ export const slides: WineSlide[] = [
     id: 3,
     title: "Schramsberg Blanc de Blancs",
     subtitle: "2022 | Brut Sparkling Wine",
+    wineryName: "Schramsberg Vineyards",
+    wineName: "2022 Blanc de Blancs • Brut Sparkling",
+    weatherPill: "2022 • Late-Aug harvest beat Sept heatwave",
+    estatePill: "1862 Diamond Mtn • 2.5 mi of 1870 volcanic caves",
     region: "Calistoga / North Coast",
     coordinates: [-122.56, 38.56],
     zoom: 13,
@@ -250,6 +266,10 @@ export const slides: WineSlide[] = [
     id: 4,
     title: "Gracianna Sauvignon Blanc",
     subtitle: "2023 | Russian River Valley",
+    wineryName: "Gracianna Winery",
+    wineName: "2023 Sauvignon Blanc",
+    weatherPill: "2023 • Cool 'vintage of the century', long hang-time",
+    estatePill: "Westside Rd 'Miracle Mile' • 40°F diurnal fog swing",
     region: "Russian River Valley, Healdsburg",
     coordinates: [-122.8845, 38.5830],
     zoom: 13,
@@ -311,6 +331,10 @@ export const slides: WineSlide[] = [
     id: 5,
     title: "Turley Old Vines Zinfandel",
     subtitle: "2023 | Heritage Zinfandel",
+    wineryName: "Turley Wine Cellars",
+    wineName: "2023 Old Vines Zinfandel",
+    weatherPill: "2023 • Wet winter & mild summer, Oct harvest",
+    estatePill: "80+ yr pre-Prohibition head-trained bush vines",
     region: "St. Helena",
     coordinates: [-122.48, 38.53],
     zoom: 14,
@@ -374,6 +398,10 @@ export const slides: WineSlide[] = [
     id: 6,
     title: "Dominus 'Napanook'",
     subtitle: "2023 | Bordeaux Blend",
+    wineryName: "Dominus Estate",
+    wineName: "2023 'Napanook' Bordeaux Blend",
+    weatherPill: "2023 • Cool summer, late Oct harvest precision",
+    estatePill: "100% dry-farmed • First Napa vines planted 1838",
     region: "Yountville",
     coordinates: [-122.37, 38.39],
     zoom: 14,
@@ -435,6 +463,10 @@ export const slides: WineSlide[] = [
     id: 7,
     title: "Stag’s Leap Wine Cellars 'ARTEMIS'",
     subtitle: "2022 | Cabernet Sauvignon",
+    wineryName: "Stag’s Leap Wine Cellars",
+    wineName: "2022 'ARTEMIS' Cabernet Sauvignon",
+    weatherPill: "2022 • Warm season cooled by San Pablo Bay breezes",
+    estatePill: "1976 Judgment of Paris Winner • Volcanic Palisades",
     region: "Stags Leap District",
     coordinates: [-122.31, 38.41],
     zoom: 14,
@@ -496,6 +528,10 @@ export const slides: WineSlide[] = [
     id: 8,
     title: "Shafer 'One Point Five'",
     subtitle: "2023 | Cabernet Sauvignon",
+    wineryName: "Shafer Vineyards",
+    wineName: "2023 'One Point Five' Cabernet Sauvignon",
+    weatherPill: "2023 • Mild summer & extended autumn hang-time",
+    estatePill: "Steep hillside amphitheater • Tiny concentrated berries",
     region: "Stags Leap District (Hillside)",
     coordinates: [-122.30, 38.42],
     zoom: 15,
@@ -557,6 +593,10 @@ export const slides: WineSlide[] = [
     id: 9,
     title: "AXR Cabernet Sauvignon",
     subtitle: "2016 | Napa Valley",
+    wineryName: "AXR Napa Valley",
+    wineName: "2016 Cabernet Sauvignon",
+    weatherPill: "2016 • 98-pt benchmark vintage, uniform warmth",
+    estatePill: "1880s Victorian estate • Named for AxR#1 rootstock",
     region: "St. Helena",
     coordinates: [-122.5048, 38.5303],
     zoom: 14,

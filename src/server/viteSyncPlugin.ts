@@ -189,9 +189,15 @@ export function presentationSyncPlugin(): Plugin {
         }));
       });
 
-      // Serve /remote fallback to index.html for client-side routing
+      // Serve /remote and /admin fallback to index.html for client-side routing
       server.middlewares.use((req, _res, next) => {
-        if (req.url && (req.url === '/remote' || req.url.startsWith('/remote?'))) {
+        if (
+          req.url &&
+          (req.url === '/remote' ||
+            req.url.startsWith('/remote?') ||
+            req.url === '/admin' ||
+            req.url.startsWith('/admin?'))
+        ) {
           req.url = '/index.html';
         }
         next();
