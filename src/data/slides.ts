@@ -69,7 +69,7 @@ export const slides: WineSlide[] = [
     zoom: 10,
     pitch: 0,
     bearing: 0,
-    story: "Today we are exploring how earth, elevation, and climate shape the wine in your glass. We will travel across 7 premier stops: from the volcanic caves of North Coast and Russian River Valley, down to the historic valley floor, and up into the steep hillside terraces.",
+    story: "Today we are exploring how earth, elevation, and climate shape the wine in your glass. We will explore how geology and microclimates create extraordinary diversity across the valley—from fog-cooled valleys and historic benchlands to steep volcanic hillsides.",
     vintageYear: "Overview",
     varietal: "Terroir & Regional Geography",
     elevation: "Sea level to 2,600+ ft",
@@ -94,11 +94,11 @@ export const slides: WineSlide[] = [
     speakerNotes: {
       talkingPoints: [
         "Welcome everyone! Frame tonight's journey: We are not just tasting wine, we are tracing geology, fog lines, and 180 years of Napa Valley history.",
-        "The Pioneer Era (1838–1862): Wine history began in 1838 when pioneer George Yount planted the valley's very first cultivated vines in Yountville—the exact ground of Dominus Napanook (Wine 4). In 1862, Jacob Schram founded Schramsberg (Wine 1), digging California's first volcanic aging caves.",
+        "The Pioneer Era (1838–1862): Wine history began in 1838 when pioneer George Yount planted the valley's very first cultivated vines in Yountville. In 1862, Jacob Schram founded an early hillside estate on Diamond Mountain, digging California's first volcanic aging caves.",
         "The Gold Rush Boom & 'Bottled Poetry' (1870s–1880s): Gold Rush wealth and the transcontinental railroad sparked a boom of over 140 wineries. In 1880, Robert Louis Stevenson honeymooned on Mount St. Helena and penned the famous line on the valley's sign: '...and the wine is bottled poetry.'",
-        "The Dark Ages of Prohibition (1919–1933): Prohibition wiped out over 90% of wineries overnight, with walnut orchards and cattle replacing vineyards. Only ancient, deep-rooted heritage vines survived—the very vines Turley still harvests from today (Wine 3).",
+        "The Dark Ages of Prohibition (1919–1933): Prohibition wiped out over 90% of wineries overnight, with walnut orchards and cattle replacing vineyards. Only ancient, deep-rooted heritage vines survived, preserved by families across generations.",
         "The 1968 Agricultural Preserve: Visionary vintners passed the nation's first land preservation act, legally protecting Napa from suburban sprawl and preserving the valley exclusively for agriculture forever.",
-        "The 1976 Judgment of Paris: In a blind tasting that shocked the global wine establishment, California defeated France's top first-growth Bordeaux. The winning Cabernet was Stag's Leap Wine Cellars (Wine 5), permanently establishing Napa Valley among the world's elite.",
+        "The 1976 Judgment of Paris: In a blind tasting that shocked the global wine establishment, California defeated France's top first-growth Bordeaux, permanently establishing Napa Valley among the world's elite wine regions.",
         "Napa Valley is surprisingly compact: only 30 miles long and 5 miles wide, yet contains half of the world's soil orders (33 soil series)."
       ],
       tastingCues: [
@@ -110,7 +110,7 @@ export const slides: WineSlide[] = [
         "Napa Valley accounts for only 0.4% of the world's wine and 4% of California's volume, but its wines generate over 30% of the state's total wine economic value.",
         "When George Yount first planted grapes in 1838, he wrote that the valley looked like 'an emerald paradise waiting for a plow.'"
       ],
-      pourNotes: "Serve water, ensure palate-cleansing crackers/bread are on the table, and have Schramsberg chilled at 45°F-48°F ready for Glass #1.",
+      pourNotes: "Serve water, ensure palate-cleansing crackers/bread are on the table, and prepare the first tasting glass.",
       terroirBreakdown: {
         elevation: "Sea level to 2,600+ ft (Carneros to Mount Veeder / Howell Mountain)",
         topology: "Valley graben flanked by the volcanic Mayacamas Range to the west and Vaca Range to the east.",
@@ -120,7 +120,7 @@ export const slides: WineSlide[] = [
       winemakerNotes: {
         name: "Curated Vintner Flight",
         role: "Historic & Modern Legends",
-        bio: "Tonight's flight features iconic cellar masters: traditional sparkling pioneers (Schramsberg), Bordeaux royalty (Christian Moueix of Château Pétrus), and hillside champions (Shafer & AXR).",
+        bio: "Tonight's journey features iconic cellar masters: pioneering traditionalists, historic benchland estates, and steep hillside masters.",
         philosophy: "Site-expressive viticulture: letting the ancient volcanic geology and elevation gradients speak rather than heavy cellar manipulation."
       }
     }
