@@ -364,8 +364,8 @@ export const slides: WineSlide[] = [
     speakerNotes: {
       talkingPoints: [
         "Transitioning to our red flight with an iconic California heritage varietal: Zinfandel.",
-        "Larry Turley and legendary winemaker Tegan Passalacqua are pioneers in rescuing historic California vineyards.",
-        "These are ancient, gnarled bush vines averaging 80 to over 100 years old, planted during or shortly after the Gold Rush & pre-Prohibition.",
+        "Before phylloxera and the modern Cabernet boom, Zinfandel was Napa’s undisputed king. Turley’s 80–100+ year-old vines are living survivors of that original era.",
+        "Larry Turley and legendary winemaker Tegan Passalacqua are pioneers in rescuing these historic California vineyards.",
         "Old vines yield minuscule crops, but the fruit concentration and natural acid-sugar balance are unmatched.",
         "Aged mostly in neutral French oak so the wild fruit and spice aren't smothered by heavy vanilla."
       ],
