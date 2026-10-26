@@ -430,8 +430,8 @@ export const slides: WineSlide[] = [
     terroirImpact: "Yountville Bench (110 ft elevation). 100% dry-farmed with zero irrigation. Vines dig deep into alluvial gravel and Mayacamas volcanic runoff, moderating canopy vigor and producing aristocratic, finely textured tannins.",
     speakerNotes: {
       talkingPoints: [
-        "Napanook is the estate second wine of Dominus, directed by Christian Moueix—the legendary French vintner behind Bordeaux's Château Pétrus.",
         "Napanook vineyard is historic ground: George Yount planted Napa's very first grapevines here in 1838.",
+        "Napanook is the estate second wine of Dominus, directed by Christian Moueix—the legendary French vintner behind Bordeaux's Château Pétrus.",
         "100% Dry-Farmed: No irrigation whatsoever. The vines are forced to dig deep root systems (20-30 ft) into gravelly Mayacamas runoff.",
         "A classic Bordeaux sensibility meets California sunshine: 92% Cabernet Sauvignon, 4% Cabernet Franc, 4% Petit Verdot, aged with just 20% new French oak."
       ],
@@ -625,8 +625,8 @@ export const slides: WineSlide[] = [
     terroirImpact: "St. Helena Bench (220 ft elevation). Deep alluvial and volcanic wash near Napa's warmest central corridor. Excellent drainage allowed extended autumn hang-time in the legendary 2016 vintage, developing complex secondary notes that have resolved into pure velvet over 10 years.",
     speakerNotes: {
       talkingPoints: [
-        "Our grand finale: A 10-year aged library vintage (2016) from St. Helena crafted by Swiss-born cult winemaker Jean Hoefliger.",
         "The story behind the name 'AXR': Honors AxR#1 (Aramon x Rupestris Ganzin No. 1), the legendary hybrid rootstock that saved California viticulture when phylloxera threatened to wipe out vineyards in the late 19th and mid-20th centuries, allowing grapevines to flourish across St. Helena benchlands.",
+        "Our grand finale: A 10-year aged library vintage (2016) from St. Helena crafted by Swiss-born cult winemaker Jean Hoefliger.",
         "The 2016 vintage in Napa Valley is celebrated as one of the finest of the century—near-perfect uniform warmth allowing optimal physiological ripeness.",
         "Aged 22 months in 80% new French oak, then cellared for a decade to achieve seamless integration."
       ],
