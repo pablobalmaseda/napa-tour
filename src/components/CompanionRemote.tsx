@@ -56,9 +56,10 @@ export const CompanionRemote: React.FC = () => {
   // Main scroll container ref
   const mainScrollRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to top when slide changes
+  // Scroll to top and reset to talking points when slide changes
   useEffect(() => {
     mainScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    setActiveTab('points');
   }, [currentSlideIndex]);
 
   // WakeLock reference
@@ -691,7 +692,10 @@ export const CompanionRemote: React.FC = () => {
         <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
           {/* Previous Button */}
           <button
-            onClick={prevSlide}
+            onClick={() => {
+              setActiveTab('points');
+              prevSlide();
+            }}
             disabled={currentSlideIndex === 0}
             className="flex-1 py-3 px-4 bg-[#1a202d] hover:bg-[#232b3d] disabled:opacity-30 disabled:pointer-events-none border border-white/10 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
           >
@@ -714,7 +718,10 @@ export const CompanionRemote: React.FC = () => {
 
           {/* Next Button */}
           <button
-            onClick={nextSlide}
+            onClick={() => {
+              setActiveTab('points');
+              nextSlide();
+            }}
             disabled={currentSlideIndex === slides.length - 1}
             className="flex-1 py-3 px-4 bg-gradient-to-r from-[#d4af37] to-[#b39129] hover:brightness-110 disabled:opacity-30 disabled:pointer-events-none text-black rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
           >
