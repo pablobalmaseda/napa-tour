@@ -96,6 +96,7 @@ export const slides: WineSlide[] = [
         "Welcome everyone! Frame tonight's journey: We are not just tasting wine, we are tracing geology, fog lines, and 180 years of Napa Valley history.",
         "The Pioneer Era (1838–1862): Wine history began in 1838 when pioneer George Yount planted the valley's very first cultivated vines in Yountville. In 1862, Jacob Schram founded an early hillside estate on Diamond Mountain, digging California's first volcanic aging caves.",
         "The Gold Rush Boom & 'Bottled Poetry' (1870s–1880s): Gold Rush wealth and the transcontinental railroad sparked a boom of over 140 wineries. In 1880, Robert Louis Stevenson honeymooned on Mount St. Helena and penned the famous line on the valley's sign: '...and the wine is bottled poetry.'",
+        "The Phylloxera Epidemic (1880s–1890s): Just as Napa was flourishing, the underground phylloxera root louse decimated vineyards across the valley. Vintners saved the wine industry by grafting European vines onto resistant native American rootstocks, establishing practices still used today.",
         "The Dark Ages of Prohibition (1919–1933): Prohibition wiped out over 90% of wineries overnight, with walnut orchards and cattle replacing vineyards. Only ancient, deep-rooted heritage vines survived, preserved by families across generations.",
         "The 1968 Agricultural Preserve: Visionary vintners passed the nation's first land preservation act, legally protecting Napa from suburban sprawl and preserving the valley exclusively for agriculture forever.",
         "The 1976 Judgment of Paris: In a blind tasting that shocked the global wine establishment, California defeated France's top first-growth Bordeaux, permanently establishing Napa Valley among the world's elite wine regions.",
@@ -230,10 +231,11 @@ export const slides: WineSlide[] = [
     terroirImpact: "Sourced from cool hillside foothills and foggy maritime pockets (550 - 1,200 ft). High hillside drainage combined with chilly Pacific marine breezes limits sugar accumulation and preserves razor-sharp natural acidity, preventing the flabbiness common in warm valley floors.",
     speakerNotes: {
       talkingPoints: [
-        "Schramsberg is America’s benchmark for Méthode Traditionnelle sparkling wine, originally established in 1862 on Diamond Mountain.",
         "Revived in 1965 by Jack and Jamie Davies, who spearheaded California’s sparkling wine renaissance.",
+        "Schramsberg is America’s benchmark for Méthode Traditionnelle sparkling wine, originally established in 1862 on Diamond Mountain.",
+        "Historic 1870 Volcanic Caves: In 1870, Jacob Schram had over 2 miles of aging caves hand-hewn directly into Diamond Mountain rock—maintaining a natural, constant 58°F and high humidity.",
         "Traditional Method: Unlike tank-carbonated sparkling (Prosecco), secondary fermentation happens inside each individual bottle, creating natural, silky micro-bubbles.",
-        "Aging on the Lees: Aged for nearly 2 full years on its spent yeast ('lees') in 2.5 miles of historic 1870 hand-hewn volcanic caves.",
+        "Aging on the Lees: Aged for nearly 2 full years on its spent yeast ('lees') inside these subterranean caves.",
         "Lees Autolysis: Yeast breakdown releases proteins that transform crisp mountain acidity into a creamy mouthfeel, imparting aromas of warm brioche and toasted almond.",
         "Fruit sourced from cold coastal pockets (Carneros, Anderson Valley, Sonoma Coast) to preserve razor-sharp natural acidity."
       ],
@@ -430,7 +432,7 @@ export const slides: WineSlide[] = [
     terroirImpact: "Yountville Bench (110 ft elevation). 100% dry-farmed with zero irrigation. Vines dig deep into alluvial gravel and Mayacamas volcanic runoff, moderating canopy vigor and producing aristocratic, finely textured tannins.",
     speakerNotes: {
       talkingPoints: [
-        "Napanook vineyard is historic ground: George Yount planted Napa's very first grapevines here in 1838.",
+        "Napanook vineyard is historic: George Yount planted Napa's very first grapevines here in 1838.",
         "Napanook is the estate second wine of Dominus, directed by Christian Moueix—the legendary French vintner behind Bordeaux's Château Pétrus.",
         "100% Dry-Farmed: No irrigation whatsoever. The vines are forced to dig deep root systems (20-30 ft) into gravelly Mayacamas runoff.",
         "A classic Bordeaux sensibility meets California sunshine: 92% Cabernet Sauvignon, 4% Cabernet Franc, 4% Petit Verdot, aged with just 20% new French oak."
@@ -561,8 +563,8 @@ export const slides: WineSlide[] = [
     speakerNotes: {
       talkingPoints: [
         "We head into the steep hillside amphitheater of Stags Leap District with Shafer Vineyards.",
-        "The story behind the name 'One Point Five': John Shafer and his son Doug worked side-by-side for decades. Rather than calling it a 'second generation' business, they considered their collaboration 'a generation and a half'.",
         "Hillside terroir: Extreme talus slopes with shallow volcanic rock. Vines struggle, producing smaller berries with double the skin-to-juice ratio.",
+        "The story behind the name 'One Point Five': John Shafer and his son Doug worked side-by-side for decades. Rather than calling it a 'second generation' business, they considered their collaboration 'a generation and a half'.",
         "Blend: 83% Cabernet Sauvignon, 12% Merlot, 3% Malbec, 2% Petit Verdot. Matured 20 months in 100% new French oak barrels."
       ],
       tastingCues: [

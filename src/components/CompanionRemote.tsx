@@ -840,9 +840,7 @@ export const CompanionRemote: React.FC = () => {
             <p className="text-xs sm:text-sm text-[#fae8b4] font-sans-clean text-center mt-3 px-2 leading-snug">
               {activePhoto.caption}
             </p>
-            <p className="text-[11px] text-gray-400 font-mono mt-1.5">
-              ← Swipe photo left or right to change on TV →
-            </p>
+
           </div>
 
           {/* Bottom Thumbnails & Prev/Next Photo Controls */}
