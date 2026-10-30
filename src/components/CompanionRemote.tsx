@@ -841,6 +841,16 @@ export const CompanionRemote: React.FC = () => {
               {activePhoto.caption}
             </p>
 
+            {(activePhoto as any).phoneNotes && (
+              <div className="mt-2.5 mx-2 p-2.5 rounded-xl bg-[#1c2232] border border-[#d4af37]/40 text-left shadow-lg">
+                <span className="text-[10px] font-cinzel uppercase tracking-wider text-[#d4af37] font-bold block mb-1">
+                  💡 Sommelier Talking Cue:
+                </span>
+                <p className="text-xs text-gray-200 leading-relaxed">
+                  {(activePhoto as any).phoneNotes}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Bottom Thumbnails & Prev/Next Photo Controls */}

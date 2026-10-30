@@ -48,7 +48,7 @@ export interface WineSlide {
   producerCode: string;
   imageUrl: string;
   imageCaption: string;
-  gallery?: { url: string; caption: string }[];
+  gallery?: { url: string; caption: string; phoneNotes?: string }[];
   isOverview?: boolean;
   wineNumber?: number;
   winemaker?: string;
@@ -127,74 +127,6 @@ export const slides: WineSlide[] = [
     }
   },
   {
-    id: 2,
-    title: "How to Taste Wine",
-    wineryName: "How to Taste Wine",
-    wineName: "The 5 S's: See • Swirl • Sniff • Sip • Savor",
-    subtitle: "The 5 S's • Wine Enthusiast Method",
-    region: "Sommelier Sensory Guide",
-    coordinates: [-122.40, 38.46],
-    zoom: 12.2,
-    pitch: 84,
-    bearing: -15,
-    story: "Before our first pour, Wine Enthusiast distills professional wine appreciation into five essential sensory steps—the '5 S's': See, Swirl, Sniff, Sip, and Savor. Following this sequence unlocks hidden aromatics, reveals how Napa's sun and cool fog shape structure on your palate, and turns casual drinking into true tasting.",
-    vintageYear: "Guide",
-    varietal: "See • Swirl • Sniff • Sip • Savor",
-    elevation: "1. See: Tilt 45° for Hue & Rim Age",
-    soil: "2. Swirl: 5s Tabletop Swirl for Esters",
-    weatherPill: "3. Sniff: Primary Fruit, Oak & Cellar Age",
-    estatePill: "4. Sip & 5. Savor: Acid Tingle vs. Tannin Grip",
-    hintsOf: "3. SNIFF (The 3 Aroma Tiers): Place your nose at the rim and take two short inhales. Identify Primary aromas (fresh fruit, citrus, herbs from the grape), Secondary aromas (brioche from yeast lees, vanilla & baking spice from oak barrels), and Tertiary aromas (savory earth, cedar, dried tea & leather from bottle aging).",
-    tastingNotes: [
-      "1. See (Color, Rim & Legs)",
-      "2. Swirl (Aerate & Release Esters)",
-      "3. Sniff (Primary, Secondary, Tertiary)",
-      "4. Sip (Acid vs. Tannin Balance)",
-      "5. Savor (Persistence & Finish)"
-    ],
-    foodPairing: "4. SIP (Structure) & 5. SAVOR (Finish): Let the wine coat your entire tongue and draw in a whisper of air to evaluate Sweetness, Acidity (mouthwatering salivation), Tannin (velvety grip), Alcohol warmth, and Body.",
-    pairsWellWith: "Why Structure Matters for Food: Crisp acidity (Wines 1 & 2) acts like a squeeze of lemon that slices through rich fats and cream, while bold Cabernet tannins (Wines 4–7) bind to proteins in marbled beef, making the wine taste softer and smoother.",
-    vintageWeather: "1. SEE & 2. SWIRL: Tilt your glass 45° against a bright background to inspect color depth and rim age—whites deepen from pale straw to gold with oak and age, while reds shift from vibrant purple-ruby (2023) to brick garnet at the rim (our 2016 AXR). Next, keep the base flat on the table and swirl for 5 seconds: oxygenating the bowl vaporizes alcohol to carry aromatic compounds up to your nose and forms 'legs' (tears) that signal alcohol and glycerol.",
-    producerCode: "TASTE",
-    imageUrl: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80",
-    imageCaption: "The Sommelier's 5 S's Ritual: See, Swirl, Sniff, Sip, Savor",
-    isOverview: true,
-    winemaker: "Wine Enthusiast Sommelier Protocol",
-    winemakerBio: "Adapted from Wine Enthusiast's official tasting framework used by blind-tasting panels and sommeliers worldwide to evaluate quality, complexity, and typicity.",
-    terroirImpact: "How Terroir Shows Up in the 5 S's: Cool marine fog (Russian River & Carneros) preserves crisp malic acidity that makes the sides of your tongue salivate on the 'Sip', while steep volcanic hillsides (Shafer) create thick grape skins that deliver deep opaque color on 'See' and firm, grippy tannins on 'Savor'.",
-    speakerNotes: {
-      talkingPoints: [
-        "1. SEE (Sight & Color): Hold your glass by the stem (so your hand doesn't warm the wine or smudge the bowl) and tilt it 45° over a white napkin. Look at the core and the rim. Whites gain color as they age (pale lemon to amber); reds lose color as they age—watch for this later when we compare our vibrant purple 2023 Cabernets against the brick-garnet rim of our 10-year-old 2016 AXR.",
-        "2. SWIRL (Aeration & Legs): Easiest trick—keep the base of the glass flat on the table and draw small circles. Swirling mixes oxygen into the wine, opening up tight aromas and volatilizing alcohol so scent molecules float up to the rim. Watch the 'legs' or 'tears' running down the glass: thicker, slower legs indicate higher alcohol or extract, not necessarily quality.",
-        "3. SNIFF (80% of Taste is Smell): Hover your nose right over the rim—take two quick sniffs rather than one long inhale so you don't fatigue your olfactory receptors. Look for three layers: Primary (fruit & florals from the grape itself), Secondary (toasted brioche from yeast in our sparkling, or vanilla/clove from French oak barrels), and Tertiary (truffle, cedar, black tea, and earth from years in the cellar).",
-        "4. SIP (Palate & Texture): Don't just swallow—roll the wine across your whole mouth and gently draw in a tiny bit of air ('the sommelier slurp') to send aromas up the back of your throat. Notice the difference between Acidity (that mouthwatering tingle under your jaw, like biting a Meyer lemon) and Tannin (that dry, velvety grip on your gums and tongue, like strong black tea).",
-        "5. SAVOR (The Finish): After you swallow, count how many seconds the flavors linger. Does it vanish quickly, or do waves of cocoa, spice, and fruit hang on for 45 to 60 seconds? A long, harmonious finish is the ultimate hallmark of a great Napa wine."
-      ],
-      tastingCues: [
-        "Practice the 'tabletop swirl' right now with your glass so everyone feels comfortable before the first pour.",
-        "Pro tip on Acid vs. Tannin: Acid makes your mouth water; Tannin makes your mouth feel dry. Pay attention to how food completely changes both!"
-      ],
-      funFacts: [
-        "Roughly 80% of what our brain perceives as 'flavor' actually comes from smell—specifically retronasal olfaction when warm air rises from the back of the mouth to the nasal cavity during the Sip and Savor steps.",
-        "Why sommeliers sniff the wine first: Beyond enjoying the bouquet, it checks for 'cork taint' (TCA)—a harmless compound that makes wine smell like wet cardboard or a damp basement and strips away fruit.",
-        "Wine 'legs' (also called 'church windows') are caused by the Marangoni effect: alcohol evaporates faster than water on the side of the glass, creating surface tension that pulls droplets upward before gravity pulls them down."
-      ],
-      pourNotes: "Have guests hold their glasses by the stem. Now bring out the chilled 2022 Schramsberg Blanc de Blancs for Stop #1!",
-      terroirBreakdown: {
-        elevation: "Sensory Architecture: How Vineyard Elevation Translates to the Glass",
-        topology: "See & Sniff: High-UV mountain slopes force grapes to grow thicker, darker skins (deeper color on 'See') and more concentrated floral/herbal aromatics ('Sniff').",
-        fogExposure: "Sip (Acidity vs. Ripeness): Cooling bay fog slows sugar accumulation and locks in crisp natural tartaric and malic acids.",
-        wineImpact: "When you 'Sip' and 'Savor' tonight, you are literally tasting geography: cool fog equals mouthwatering acidity, while rocky volcanic hillsides equal bold, velvety tannin structure."
-      },
-      winemakerNotes: {
-        name: "The Wine Enthusiast 5 S's",
-        role: "Professional Tasting Framework",
-        bio: "1. SEE (Hue, depth & viscosity) → 2. SWIRL (Oxygenate & volatilize) → 3. SNIFF (Fruit, oak & age) → 4. SIP (Sweetness, acid, tannin & body) → 5. SAVOR (Length, balance & finish).",
-        philosophy: "There is no 'wrong' aroma in wine tasting—everyone's scent memory is unique. Trust your senses and notice how each wine evolves with air and food."
-      }
-    }
-  },
-  {
     id: 3,
     title: "Schramsberg Blanc de Blancs",
     subtitle: "2022 | Brut Sparkling Wine",
@@ -222,12 +154,16 @@ export const slides: WineSlide[] = [
     imageCaption: "Outside: Historic 19th-Century Schramsberg Winery Barn on Diamond Mountain",
     gallery: [
       { url: "/wineries/schramsberg.jpg", caption: "Outside: Historic 19th-Century Schramsberg Winery Barn on Diamond Mountain" },
-      { url: "/wineries/schramsberg-2.jpg", caption: "Inside the Caves: Historic 1870 Hand-Hewn Volcanic Tunnels & Aging Barrels" },
+      { 
+        url: "/wineries/schramsberg-2.jpg", 
+        caption: "Inside the Caves: Historic 1870 Hand-Hewn Volcanic Tunnels & Aging Barrels",
+        phoneNotes: "Historic 1870 Volcanic Caves: In 1870, Jacob Schram had over 2 miles of aging caves hand-hewn directly into Diamond Mountain rock—maintaining a natural, constant 58°F and high humidity."
+      },
       { url: "/wineries/schramsberg-3.jpg", caption: "The Vines: Cool-Climate Sparkling Chardonnay Vineyards Overlooking the Estate Pond" }
     ],
     wineNumber: 1,
     winemaker: "Sean Thompson & Hugh Davies",
-    winemakerBio: "Senior Winemaker Sean Thompson has directed sparkling production at Schramsberg for over 15 years, vinifying over 120 separate vineyard lots alongside second-generation vintner Hugh Davies.",
+    winemakerBio: "Senior Winemaker Sean Thompson has directed sparkling production at Schramsberg for over 15 years, vinifying over 120 separate vineyard lots alongside second-generation vintner Hugh Davies (the youngest son of Jack and Jamie Davies).",
     terroirImpact: "Sourced from cool hillside foothills and foggy maritime pockets (550 - 1,200 ft). High hillside drainage combined with chilly Pacific marine breezes limits sugar accumulation and preserves razor-sharp natural acidity, preventing the flabbiness common in warm valley floors.",
     speakerNotes: {
       talkingPoints: [
@@ -256,9 +192,9 @@ export const slides: WineSlide[] = [
         wineImpact: "Elevation and slope maintain piercing malic acid and delicate citrus tension. Slopes prevent standing water, keeping cluster vigor in check and concentrating vibrant crisp fruit essential for world-class sparkling longevity."
       },
       winemakerNotes: {
-        name: "Sean Thompson",
-        role: "Senior Winemaker (15+ Years at Schramsberg)",
-        bio: "Thompson barrel-ferments roughly 25% of the base wine lots in neutral French oak barrels to build rich texture and mid-palate roundness before secondary fermentation in bottle.",
+        name: "Sean Thompson & Hugh Davies",
+        role: "Senior Winemaker & Second-Gen Vintner",
+        bio: "Senior Winemaker Sean Thompson directs sparkling production alongside second-generation vintner Hugh Davies, the youngest son of Jack and Jamie Davies who led the 1965 revival of Schramsberg.",
         philosophy: "Traditional French discipline married to California fruit: harmonize crisp coastal acidity with rich, yeasty brioche character born from extended bottle aging on the lees."
       }
     }
@@ -325,6 +261,74 @@ export const slides: WineSlide[] = [
         role: "Estate Founder & Winemaker",
         bio: "Trini crafts handcrafted wines honoring his family's Basque shepherd roots, believing wine should foster gratitude and conversation.",
         philosophy: "Pure varietal transparency: Cold fermentation in 100% stainless steel with zero oak contact and no malolactic conversion to preserve refreshing acidity."
+      }
+    }
+  },
+  {
+    id: 2,
+    title: "How to Taste Wine",
+    wineryName: "How to Taste Wine",
+    wineName: "The 5 S's: See • Swirl • Sniff • Sip • Savor",
+    subtitle: "The 5 S's • Wine Enthusiast Method",
+    region: "Sommelier Sensory Guide",
+    coordinates: [-122.40, 38.46],
+    zoom: 12.2,
+    pitch: 84,
+    bearing: -15,
+    story: "As we transition from whites into our red flight, Wine Enthusiast distills professional wine appreciation into five essential sensory steps—the '5 S's': See, Swirl, Sniff, Sip, and Savor. Following this sequence unlocks hidden aromatics, reveals how Napa's sun and cool fog shape structure on your palate, and turns casual drinking into true tasting.",
+    vintageYear: "Guide",
+    varietal: "See • Swirl • Sniff • Sip • Savor",
+    elevation: "1. See: Tilt 45° for Hue & Rim Age",
+    soil: "2. Swirl: 5s Tabletop Swirl for Esters",
+    weatherPill: "3. Sniff: Primary Fruit, Oak & Cellar Age",
+    estatePill: "4. Sip & 5. Savor: Acid Tingle vs. Tannin Grip",
+    hintsOf: "3. SNIFF (The 3 Aroma Tiers): Place your nose at the rim and take two short inhales. Identify Primary aromas (fresh fruit, citrus, herbs from the grape), Secondary aromas (brioche from yeast lees, vanilla & baking spice from oak barrels), and Tertiary aromas (savory earth, cedar, dried tea & leather from bottle aging).",
+    tastingNotes: [
+      "1. See (Color, Rim & Legs)",
+      "2. Swirl (Aerate & Release Esters)",
+      "3. Sniff (Primary, Secondary, Tertiary)",
+      "4. Sip (Acid vs. Tannin Balance)",
+      "5. Savor (Persistence & Finish)"
+    ],
+    foodPairing: "4. SIP (Structure) & 5. SAVOR (Finish): Let the wine coat your entire tongue and draw in a whisper of air to evaluate Sweetness, Acidity (mouthwatering salivation), Tannin (velvety grip), Alcohol warmth, and Body.",
+    pairsWellWith: "Why Structure Matters for Food: Crisp acidity (Wines 1 & 2) acts like a squeeze of lemon that slices through rich fats and cream, while bold Cabernet tannins (Wines 3–7) bind to proteins in marbled beef, making the wine taste softer and smoother.",
+    vintageWeather: "1. SEE & 2. SWIRL: Tilt your glass 45° against a bright background to inspect color depth and rim age—whites deepen from pale straw to gold with oak and age, while reds shift from vibrant purple-ruby (2023) to brick garnet at the rim (our 2016 AXR). Next, keep the base flat on the table and swirl for 5 seconds: oxygenating the bowl vaporizes alcohol to carry aromatic compounds up to your nose and forms 'legs' (tears) that signal alcohol and glycerol.",
+    producerCode: "TASTE",
+    imageUrl: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1200&q=80",
+    imageCaption: "The Sommelier's 5 S's Ritual: See, Swirl, Sniff, Sip, Savor",
+    isOverview: true,
+    winemaker: "Wine Enthusiast Sommelier Protocol",
+    winemakerBio: "Adapted from Wine Enthusiast's official tasting framework used by blind-tasting panels and sommeliers worldwide to evaluate quality, complexity, and typicity.",
+    terroirImpact: "How Terroir Shows Up in the 5 S's: Cool marine fog (Russian River & Carneros) preserves crisp malic acidity that makes the sides of your tongue salivate on the 'Sip', while steep volcanic hillsides (Shafer) create thick grape skins that deliver deep opaque color on 'See' and firm, grippy tannins on 'Savor'.",
+    speakerNotes: {
+      talkingPoints: [
+        "1. SEE (Sight & Color): Hold your glass by the stem (so your hand doesn't warm the wine or smudge the bowl) and tilt it 45° over a white napkin. Look at the core and the rim. Whites gain color as they age (pale lemon to amber); reds lose color as they age—watch for this later when we compare our vibrant purple 2023 Cabernets against the brick-garnet rim of our 10-year-old 2016 AXR.",
+        "2. SWIRL (Aeration & Legs): Easiest trick—keep the base of the glass flat on the table and draw small circles. Swirling mixes oxygen into the wine, opening up tight aromas and volatilizing alcohol so scent molecules float up to the rim. Watch the 'legs' or 'tears' running down the glass: thicker, slower legs indicate higher alcohol or extract, not necessarily quality.",
+        "3. SNIFF (80% of Taste is Smell): Hover your nose right over the rim—take two quick sniffs rather than one long inhale so you don't fatigue your olfactory receptors. Look for three layers: Primary (fruit & florals from the grape itself), Secondary (toasted brioche from yeast in our sparkling, or vanilla/clove from French oak barrels), and Tertiary (truffle, cedar, black tea, and earth from years in the cellar).",
+        "4. SIP (Palate & Texture): Don't just swallow—roll the wine across your whole mouth and gently draw in a tiny bit of air ('the sommelier slurp') to send aromas up the back of your throat. Notice the difference between Acidity (that mouthwatering tingle under your jaw, like biting a Meyer lemon) and Tannin (that dry, velvety grip on your gums and tongue, like strong black tea).",
+        "5. SAVOR (The Finish): After you swallow, count how many seconds the flavors linger. Does it vanish quickly, or do waves of cocoa, spice, and fruit hang on for 45 to 60 seconds? A long, harmonious finish is the ultimate hallmark of a great Napa wine."
+      ],
+      tastingCues: [
+        "Practice the 'tabletop swirl' right now with your glass so everyone feels comfortable before the first red pour.",
+        "Pro tip on Acid vs. Tannin: Acid makes your mouth water; Tannin makes your mouth feel dry. Pay attention to how food completely changes both!"
+      ],
+      funFacts: [
+        "Roughly 80% of what our brain perceives as 'flavor' actually comes from smell—specifically retronasal olfaction when warm air rises from the back of the mouth to the nasal cavity during the Sip and Savor steps.",
+        "Why sommeliers sniff the wine first: Beyond enjoying the bouquet, it checks for 'cork taint' (TCA)—a harmless compound that makes wine smell like wet cardboard or a damp basement and strips away fruit.",
+        "Wine 'legs' (also called 'church windows') are caused by the Marangoni effect: alcohol evaporates faster than water on the side of the glass, creating surface tension that pulls droplets upward before gravity pulls them down."
+      ],
+      pourNotes: "Have guests hold their glasses by the stem. Now prepare Stop #3: 2023 Turley Old Vines Zinfandel!",
+      terroirBreakdown: {
+        elevation: "Sensory Architecture: How Vineyard Elevation Translates to the Glass",
+        topology: "See & Sniff: High-UV mountain slopes force grapes to grow thicker, darker skins (deeper color on 'See') and more concentrated floral/herbal aromatics ('Sniff').",
+        fogExposure: "Sip (Acidity vs. Ripeness): Cooling bay fog slows sugar accumulation and locks in crisp natural tartaric and malic acids.",
+        wineImpact: "When you 'Sip' and 'Savor' tonight, you are literally tasting geography: cool fog equals mouthwatering acidity, while rocky volcanic hillsides equal bold, velvety tannin structure."
+      },
+      winemakerNotes: {
+        name: "The Wine Enthusiast 5 S's",
+        role: "Professional Tasting Framework",
+        bio: "1. SEE (Hue, depth & viscosity) → 2. SWIRL (Oxygenate & volatilize) → 3. SNIFF (Fruit, oak & age) → 4. SIP (Sweetness, acid, tannin & body) → 5. SAVOR (Length, balance & finish).",
+        philosophy: "There is no 'wrong' aroma in wine tasting—everyone's scent memory is unique. Trust your senses and notice how each wine evolves with air and food."
       }
     }
   },
