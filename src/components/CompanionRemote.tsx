@@ -13,7 +13,6 @@ import {
   Play, 
   Pause, 
   ListOrdered, 
-  Sun, 
   X,
   Utensils,
   Mountain,
@@ -40,9 +39,10 @@ export const CompanionRemote: React.FC = () => {
     clientsCount 
   } = usePresentationSync(0, slides.length);
 
-  const [activeTab, setActiveTab] = useState<'points' | 'terroir' | 'maker' | 'cues' | 'pairing'>('points');
+  const [activeTab, setActiveTab] = useState<'points' | 'background'>('points');
   const [checkedPoints, setCheckedPoints] = useState<Record<string, boolean>>({});
   const [showDrawer, setShowDrawer] = useState(false);
+  const [showTimerControls, setShowTimerControls] = useState(false);
   const [isWakeLockActive, setIsWakeLockActive] = useState(false);
 
   // Presentation stopwatch timer
@@ -213,47 +213,53 @@ export const CompanionRemote: React.FC = () => {
       onTouchEnd={handleTouchEnd}
     >
       {/* Top Bar: Connection, Timer, Navigation Tools */}
-      <header className="shrink-0 bg-[#10131b]/95 backdrop-blur-md border-b border-[#222736] px-4 py-3 shadow-md z-20">
+      <header className="shrink-0 bg-[#10131b]/95 backdrop-blur-md border-b border-[#222736] px-4 py-2.5 shadow-md z-20">
         <div className="flex items-center justify-between">
           {/* Status & Connection */}
           <div className="flex items-center gap-2">
             <div 
               className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-amber-400'}`}
-              title={isConnected ? 'Synced with Main Display' : 'Reconnecting...'}
+              title={isConnected ? `Synced (${isWakeLockActive ? 'Screen Awake' : 'Normal'})` : 'Reconnecting...'}
             />
             <span className="text-xs font-mono text-gray-400">
               {isConnected ? `${clientsCount} Sync` : 'Offline'}
             </span>
-            {isWakeLockActive && (
-              <span className="flex items-center gap-1 text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 px-1.5 py-0.5 rounded-full font-mono ml-1">
-                <Sun className="w-2.5 h-2.5" />
-                Awake
-              </span>
-            )}
           </div>
 
-          {/* Tasting Stopwatch */}
-          <div className="flex items-center gap-1.5 bg-[#171b26] border border-white/5 px-2.5 py-1 rounded-full text-xs font-mono">
-            <Clock className="w-3.5 h-3.5 text-[#d4af37]" />
-            <span>{formatTimer(timerSeconds)}</span>
-            <button 
-              onClick={() => setIsTimerRunning(!isTimerRunning)} 
-              className="text-gray-400 hover:text-white ml-0.5"
+          {/* Tasting Stopwatch (Tap to expand pause/reset) */}
+          <div className="flex items-center gap-1.5 bg-[#171b26] border border-white/10 px-2.5 py-1 rounded-full text-xs font-mono">
+            <button
+              onClick={() => setShowTimerControls(!showTimerControls)}
+              className="flex items-center gap-1.5 text-gray-200 hover:text-[#d4af37] transition-colors"
+              title="Tap to toggle timer controls"
             >
-              {isTimerRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+              <Clock className="w-3.5 h-3.5 text-[#d4af37]" />
+              <span className="font-semibold">{formatTimer(timerSeconds)}</span>
             </button>
-            <button 
-              onClick={() => { setTimerSeconds(0); setIsTimerRunning(true); }}
-              className="text-gray-400 hover:text-white"
-            >
-              <RotateCcw className="w-3 h-3" />
-            </button>
+            {showTimerControls && (
+              <div className="flex items-center gap-1.5 ml-1 pl-1.5 border-l border-white/15 animate-in fade-in">
+                <button 
+                  onClick={() => setIsTimerRunning(!isTimerRunning)} 
+                  className="text-gray-400 hover:text-white"
+                  title={isTimerRunning ? 'Pause' : 'Play'}
+                >
+                  {isTimerRunning ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 text-emerald-400" />}
+                </button>
+                <button 
+                  onClick={() => { setTimerSeconds(0); setIsTimerRunning(true); }}
+                  className="text-gray-400 hover:text-white"
+                  title="Reset"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Flight Drawer Toggle */}
           <button
             onClick={() => setShowDrawer(true)}
-            className="flex items-center gap-1 bg-[#1c2230] hover:bg-[#252c3f] border border-[#d4af37]/30 text-[#d4af37] px-2.5 py-1 rounded-lg text-xs font-medium"
+            className="flex items-center gap-1.5 bg-[#1c2230] hover:bg-[#252c3f] border border-[#d4af37]/30 text-[#d4af37] px-3 py-1 rounded-lg text-xs font-medium"
           >
             <ListOrdered className="w-3.5 h-3.5" />
             <span>Flight</span>
@@ -305,291 +311,202 @@ export const CompanionRemote: React.FC = () => {
           </div>
         </div>
 
-        {/* Tab Navigation for Notes (5 Categories) */}
-        <div className="grid grid-cols-5 gap-1 p-1 bg-[#12151e] rounded-xl border border-white/5 mb-3 text-[11px] font-medium text-center">
+        {/* Tab Navigation for Notes (2 Focused Categories) */}
+        <div className="grid grid-cols-2 gap-1.5 p-1 bg-[#12151e] rounded-xl border border-white/5 mb-3 text-xs font-medium text-center">
           <button
             onClick={() => setActiveTab('points')}
-            className={`py-2 rounded-lg transition-all ${activeTab === 'points' ? 'bg-[#d4af37] text-black font-bold shadow' : 'text-gray-400 hover:text-white'}`}
+            className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === 'points' 
+                ? 'bg-[#d4af37] text-black font-bold shadow' 
+                : 'text-gray-400 hover:text-white'
+            }`}
           >
-            Points
+            <ListOrdered className="w-3.5 h-3.5" />
+            <span>Presenter Guide</span>
           </button>
           <button
-            onClick={() => setActiveTab('terroir')}
-            className={`py-2 rounded-lg transition-all ${activeTab === 'terroir' ? 'bg-[#d4af37] text-black font-bold shadow' : 'text-gray-400 hover:text-white'}`}
+            onClick={() => setActiveTab('background')}
+            className={`py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === 'background' 
+                ? 'bg-[#d4af37] text-black font-bold shadow' 
+                : 'text-gray-400 hover:text-white'
+            }`}
           >
-            Terroir
-          </button>
-          <button
-            onClick={() => setActiveTab('maker')}
-            className={`py-2 rounded-lg transition-all ${activeTab === 'maker' ? 'bg-[#d4af37] text-black font-bold shadow' : 'text-gray-400 hover:text-white'}`}
-          >
-            Maker
-          </button>
-          <button
-            onClick={() => setActiveTab('cues')}
-            className={`py-2 rounded-lg transition-all ${activeTab === 'cues' ? 'bg-[#d4af37] text-black font-bold shadow' : 'text-gray-400 hover:text-white'}`}
-          >
-            Cues
-          </button>
-          <button
-            onClick={() => setActiveTab('pairing')}
-            className={`py-2 rounded-lg transition-all ${activeTab === 'pairing' ? 'bg-[#d4af37] text-black font-bold shadow' : 'text-gray-400 hover:text-white'}`}
-          >
-            Pairing
+            <Mountain className="w-3.5 h-3.5" />
+            <span>Winery &amp; Terroir</span>
           </button>
         </div>
 
         {/* Tab Content Cards */}
-        <div className="bg-[#141824] border border-[#262c3e] rounded-2xl p-4 shadow-lg min-h-[240px]">
-          {/* TAB 1: TALKING POINTS (WITH INTERACTIVE CHECKLIST) */}
+        <div className="bg-[#141824] border border-[#262c3e] rounded-2xl p-4 shadow-lg min-h-[240px] space-y-4">
+          {/* TAB 1: PRESENTER GUIDE (TALKING POINTS + SOMMELIER CUES) */}
           {activeTab === 'points' && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-xs font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
-                  Key Talking Points
-                </span>
-                <span className="text-[10px] text-gray-400">
-                  {currentSlide.producerCode === 'TASTE'
-                    ? 'Check off to advance 5 S’s on TV'
-                    : 'Tap to check off'}
-                </span>
-              </div>
-              {notes?.talkingPoints?.map((point, idx) => {
-                const key = `${currentSlide.id}-tp-${idx}`;
-                const isChecked = !!checkedPoints[key];
-                const isActiveOnTv =
-                  currentSlide.producerCode === 'TASTE' && photoIndex === idx;
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => toggleCheckPoint(key, idx)}
-                    className={`flex items-start gap-3 p-2.5 rounded-xl transition-all cursor-pointer ${
-                      isChecked 
-                        ? 'bg-emerald-950/20 border border-emerald-800/30 text-gray-400 line-through' 
-                        : isActiveOnTv
-                        ? 'bg-[#1f2538] border border-[#d4af37] text-white shadow-[0_0_15px_rgba(212,175,55,0.15)]'
-                        : 'bg-[#181c2b] border border-white/5 hover:border-white/10 text-gray-200'
-                    }`}
-                  >
-                    {isChecked ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    ) : (
-                      <Circle className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      {isActiveOnTv && !isChecked && (
-                        <span className="inline-block text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d4af37] text-black mb-1">
-                          Showing on TV
-                        </span>
+            <div className="space-y-4">
+              {/* Talking Points Checklist */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between pb-1.5 border-b border-white/5">
+                  <span className="text-xs font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
+                    Key Talking Points
+                  </span>
+                  <span className="text-[10px] text-gray-400">
+                    {currentSlide.producerCode === 'TASTE'
+                      ? 'Check off to advance 5 S’s on TV'
+                      : 'Tap to check off'}
+                  </span>
+                </div>
+                {notes?.talkingPoints?.map((point, idx) => {
+                  const key = `${currentSlide.id}-tp-${idx}`;
+                  const isChecked = !!checkedPoints[key];
+                  const isActiveOnTv =
+                    currentSlide.producerCode === 'TASTE' && photoIndex === idx;
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => toggleCheckPoint(key, idx)}
+                      className={`flex items-start gap-3 p-2.5 rounded-xl transition-all cursor-pointer ${
+                        isChecked 
+                          ? 'bg-emerald-950/20 border border-emerald-800/30 text-gray-400 line-through' 
+                          : isActiveOnTv
+                          ? 'bg-[#1f2538] border border-[#d4af37] text-white shadow-[0_0_15px_rgba(212,175,55,0.15)]'
+                          : 'bg-[#181c2b] border border-white/5 hover:border-white/10 text-gray-200'
+                      }`}
+                    >
+                      {isChecked ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
                       )}
-                      <span className="text-xs leading-relaxed block">{point}</span>
+                      <div className="flex-1 min-w-0">
+                        {isActiveOnTv && !isChecked && (
+                          <span className="inline-block text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#d4af37] text-black mb-1">
+                            Showing on TV
+                          </span>
+                        )}
+                        <span className="text-xs leading-relaxed block">{point}</span>
+                      </div>
                     </div>
+                  );
+                })}
+              </div>
+
+              {/* Sommelier Tasting Cues */}
+              {notes?.tastingCues && notes.tastingCues.length > 0 && (
+                <div className="space-y-2 pt-2 border-t border-white/5">
+                  <div className="flex items-center gap-1.5 text-xs font-cinzel uppercase tracking-wider text-[#fae8b4] font-semibold">
+                    <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
+                    <span>Sommelier Tasting Cues</span>
                   </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* TAB 2: ELEVATION, TOPOLOGY & TERROIR */}
-          {activeTab === 'terroir' && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-xs font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
-                  Elevation, Topology &amp; Microclimate
-                </span>
-                <Mountain className="w-3.5 h-3.5 text-[#d4af37]" />
-              </div>
-
-              {/* Elevation & Slope Quick Grid */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-[#181c2b] border border-white/5 p-2.5 rounded-xl">
-                  <span className="text-[10px] text-gray-400 uppercase font-semibold block mb-0.5">
-                    Elevation Profile
-                  </span>
-                  <p className="text-xs text-[#fae8b4] font-medium">
-                    {currentSlide.elevation || notes?.terroirBreakdown?.elevation || 'Napa Valley'}
-                  </p>
-                </div>
-                <div className="bg-[#181c2b] border border-white/5 p-2.5 rounded-xl">
-                  <span className="text-[10px] text-gray-400 uppercase font-semibold block mb-0.5">
-                    Region &amp; AVA
-                  </span>
-                  <p className="text-xs text-gray-200 font-medium truncate">
-                    {currentSlide.region}
-                  </p>
-                </div>
-              </div>
-
-              {/* Topology Card */}
-              <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl">
-                <span className="text-[10px] text-gray-400 uppercase font-semibold block mb-1">
-                  Topology &amp; Slope Dynamics
-                </span>
-                <p className="text-xs text-gray-200 leading-relaxed">
-                  {notes?.terroirBreakdown?.topology || currentSlide.soil}
-                </p>
-              </div>
-
-              {/* Fog & Thermal Inversion */}
-              {notes?.terroirBreakdown?.fogExposure && (
-                <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl">
-                  <span className="text-[10px] text-gray-400 uppercase font-semibold block mb-1">
-                    Marine Fog &amp; Solar Exposure
-                  </span>
-                  <p className="text-xs text-gray-200 leading-relaxed">
-                    {notes.terroirBreakdown.fogExposure}
-                  </p>
-                </div>
-              )}
-
-              {/* What This Does to the Wine */}
-              <div className="bg-gradient-to-r from-amber-950/25 to-[#191c28] border border-amber-600/30 p-3.5 rounded-xl shadow-sm">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
-                  <span className="text-xs font-cinzel uppercase tracking-wider text-[#fae8b4] font-bold">
-                    What This Does To The Wine:
-                  </span>
-                </div>
-                <p className="text-xs text-amber-100/90 leading-relaxed font-light">
-                  {notes?.terroirBreakdown?.wineImpact || currentSlide.terroirImpact}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: WINEMAKER PROFILE & PHILOSOPHY */}
-          {activeTab === 'maker' && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-xs font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
-                  Winemaker Profile &amp; Craft
-                </span>
-                <UserCheck className="w-3.5 h-3.5 text-[#d4af37]" />
-              </div>
-
-              {/* Winemaker Name & Bio Card */}
-              <div className="bg-[#181c2b] border border-[#d4af37]/30 p-3.5 rounded-xl shadow-inner">
-                <span className="text-[10px] uppercase tracking-wider text-[#d4af37] font-semibold block mb-0.5">
-                  {notes?.winemakerNotes?.role || 'Cellar Master'}
-                </span>
-                <h3 className="font-serif-luxury text-base font-bold text-white mb-2">
-                  {currentSlide.winemaker || notes?.winemakerNotes?.name}
-                </h3>
-                <p className="text-xs text-gray-300 leading-relaxed font-light">
-                  {currentSlide.winemakerBio || notes?.winemakerNotes?.bio}
-                </p>
-              </div>
-
-              {/* Winemaking Philosophy */}
-              {notes?.winemakerNotes?.philosophy && (
-                <div className="bg-[#161a25] border border-white/5 p-3 rounded-xl">
-                  <span className="text-[10px] uppercase tracking-wider text-[#fae8b4] font-semibold block mb-1">
-                    Winemaking Philosophy &amp; Cellar Approach
-                  </span>
-                  <p className="text-xs text-gray-300 leading-relaxed italic">
-                    &ldquo;{notes.winemakerNotes.philosophy}&rdquo;
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 4: TASTING CUES & WINERY LORE */}
-          {activeTab === 'cues' && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-xs font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
-                  Tasting Prompts &amp; Lore
-                </span>
-                <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
-              </div>
-              {notes?.tastingCues?.map((cue, idx) => (
-                <div 
-                  key={idx} 
-                  className="bg-[#181c2b] border border-white/5 p-3 rounded-xl text-xs leading-relaxed text-gray-200"
-                >
-                  <p className="font-medium text-amber-200/90 mb-1">
-                    Tasting Cue #{idx + 1}:
-                  </p>
-                  <p>{cue}</p>
-                </div>
-              ))}
-
-              {/* Flavor Tags */}
-              {currentSlide.tastingNotes && currentSlide.tastingNotes.length > 0 && (
-                <div className="pt-1">
-                  <span className="text-[11px] text-gray-400 block mb-1.5 uppercase tracking-wider">
-                    Official Flavor Tags:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {currentSlide.tastingNotes.map((tag, i) => (
-                      <span 
-                        key={i} 
-                        className="text-[11px] bg-[#222736] text-[#e8e6e3] border border-white/5 px-2 py-0.5 rounded-md"
+                  <div className="space-y-2">
+                    {notes.tastingCues.map((cue, idx) => (
+                      <div 
+                        key={idx} 
+                        className="bg-[#181c2b] border border-white/5 p-2.5 rounded-xl text-xs leading-relaxed text-gray-200"
                       >
-                        {tag}
-                      </span>
+                        <p className="font-medium text-amber-200/90 text-[11px] mb-0.5">
+                          Cue #{idx + 1}:
+                        </p>
+                        <p>{cue}</p>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Winery Lore */}
-              {notes?.funFacts && notes.funFacts.length > 0 && (
-                <div className="space-y-2 pt-2 border-t border-white/5">
-                  <span className="text-[11px] font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold block">
-                    Winery Lore &amp; Fun Facts
+              {/* Pouring Guidance */}
+              {notes?.pourNotes && (
+                <div className="bg-amber-950/20 border border-amber-800/30 p-3 rounded-xl text-xs">
+                  <span className="text-amber-300 font-semibold block mb-0.5">
+                    Sommelier Pouring Note:
                   </span>
-                  {notes.funFacts.map((fact, idx) => (
-                    <div 
-                      key={idx} 
-                      className="bg-[#181c2b] border border-white/5 p-3 rounded-xl text-xs leading-relaxed text-gray-200"
-                    >
-                      <p className="font-semibold text-[#d4af37] mb-1">
-                        Did you know?
-                      </p>
-                      <p>{fact}</p>
-                    </div>
-                  ))}
+                  <p className="text-amber-100/90 leading-relaxed">{notes.pourNotes}</p>
                 </div>
               )}
             </div>
           )}
 
-          {/* TAB 5: SERVING & PAIRING GUIDANCE */}
-          {activeTab === 'pairing' && (
-            <div className="space-y-3 text-xs">
-              <div className="flex items-center justify-between pb-2 border-b border-white/5">
-                <span className="text-xs font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
-                  Pouring &amp; Pairing Service
+          {/* TAB 2: WINERY & TERROIR (MAKER, TERROIR, PAIRING & LORE) */}
+          {activeTab === 'background' && (
+            <div className="space-y-3.5">
+              {/* Winemaker Section */}
+              <div className="bg-[#181c2b] border border-[#d4af37]/30 p-3.5 rounded-xl">
+                <span className="text-[10px] uppercase tracking-wider text-[#d4af37] font-semibold block mb-0.5">
+                  {notes?.winemakerNotes?.role || 'Winemaker'}
                 </span>
-                <Utensils className="w-3.5 h-3.5 text-[#d4af37]" />
+                <h3 className="font-serif-luxury text-base font-bold text-white mb-1.5">
+                  {currentSlide.winemaker || notes?.winemakerNotes?.name}
+                </h3>
+                <p className="text-xs text-gray-300 leading-relaxed font-light">
+                  {currentSlide.winemakerBio || notes?.winemakerNotes?.bio}
+                </p>
+                {notes?.winemakerNotes?.philosophy && (
+                  <p className="text-xs text-[#fae8b4]/90 italic mt-2 pt-2 border-t border-white/5">
+                    &ldquo;{notes.winemakerNotes.philosophy}&rdquo;
+                  </p>
+                )}
               </div>
 
-              {notes?.pourNotes && (
-                <div className="bg-amber-950/20 border border-amber-800/30 p-3 rounded-xl">
-                  <span className="text-amber-300 font-semibold block mb-1">
-                    Sommelier Pouring Notes:
+              {/* Terroir & Elevation */}
+              <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold">
+                    Terroir &amp; Microclimate
                   </span>
-                  <p className="text-amber-100/90 leading-relaxed">{notes.pourNotes}</p>
+                  <Mountain className="w-3.5 h-3.5 text-[#d4af37]" />
                 </div>
-              )}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-[#12151f] p-2 rounded-lg">
+                    <span className="text-[10px] text-gray-400 block">Elevation</span>
+                    <p className="text-[#fae8b4] font-medium">{currentSlide.elevation || notes?.terroirBreakdown?.elevation || 'Napa Valley'}</p>
+                  </div>
+                  <div className="bg-[#12151f] p-2 rounded-lg">
+                    <span className="text-[10px] text-gray-400 block">Soil</span>
+                    <p className="text-gray-200 font-medium truncate">{currentSlide.soil || 'Volcanic alluvium'}</p>
+                  </div>
+                </div>
+                {notes?.terroirBreakdown?.topology && (
+                  <p className="text-xs text-gray-300 leading-relaxed pt-1">
+                    {notes.terroirBreakdown.topology}
+                  </p>
+                )}
+                {(notes?.terroirBreakdown?.wineImpact || currentSlide.terroirImpact) && (
+                  <div className="bg-gradient-to-r from-amber-950/25 to-[#191c28] border border-amber-600/30 p-2.5 rounded-lg">
+                    <span className="text-[10px] font-cinzel uppercase tracking-wider text-[#fae8b4] font-bold block mb-1">
+                      What This Does to the Wine:
+                    </span>
+                    <p className="text-xs text-amber-100/90 leading-relaxed">
+                      {notes?.terroirBreakdown?.wineImpact || currentSlide.terroirImpact}
+                    </p>
+                  </div>
+                )}
+              </div>
 
+              {/* Food Pairing */}
               {currentSlide.foodPairing && (
-                <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl">
-                  <span className="text-[#d4af37] font-semibold block mb-1">
-                    Tonight's Pairing:
-                  </span>
-                  <p className="text-gray-300 leading-relaxed">{currentSlide.foodPairing}</p>
+                <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl text-xs space-y-1">
+                  <div className="flex items-center gap-1.5 text-[#d4af37] font-semibold mb-1">
+                    <Utensils className="w-3.5 h-3.5" />
+                    <span>Tonight's Pairing:</span>
+                  </div>
+                  <p className="text-gray-200 leading-relaxed font-medium">{currentSlide.foodPairing}</p>
+                  {currentSlide.pairsWellWith && (
+                    <p className="text-[11px] text-gray-400 pt-1 border-t border-white/5">
+                      Also pairs with: {currentSlide.pairsWellWith}
+                    </p>
+                  )}
                 </div>
               )}
 
-              {currentSlide.pairsWellWith && (
-                <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl">
-                  <span className="text-gray-400 font-semibold block mb-1">
-                    Classic Complementary Foods:
+              {/* Winery Lore */}
+              {notes?.funFacts && notes.funFacts.length > 0 && (
+                <div className="bg-[#181c2b] border border-white/5 p-3 rounded-xl text-xs space-y-1.5">
+                  <span className="text-[10px] font-cinzel uppercase tracking-wider text-[#d4af37] font-semibold block">
+                    Did You Know?
                   </span>
-                  <p className="text-gray-300 leading-relaxed">{currentSlide.pairsWellWith}</p>
+                  {notes.funFacts.map((fact, idx) => (
+                    <p key={idx} className="text-gray-300 leading-relaxed">
+                      {fact}
+                    </p>
+                  ))}
                 </div>
               )}
             </div>
@@ -616,80 +533,9 @@ export const CompanionRemote: React.FC = () => {
         )}
       </main>
 
-      {/* Bottom Navigation & TV Remote Control Bar */}
-      <footer className="shrink-0 bg-[#0e1118]/95 backdrop-blur-lg border-t border-[#232938] px-4 py-2.5 z-30 shadow-2xl space-y-2">
-        {/* Compact TV Screen Controls (Switch TV Tab & Control Winery Photos on TV) */}
-        <div className="max-w-lg mx-auto flex items-center justify-between gap-2 bg-[#141824] border border-white/10 rounded-xl p-1.5">
-          {/* TV Tab Switcher (1. Terroir / 2. Palate / 3. Pairing) */}
-          <div className="flex items-center gap-1 flex-1">
-            <Monitor className="w-3.5 h-3.5 text-[#d4af37] ml-1 shrink-0" />
-            <button
-              onClick={() => setTvTab('story')}
-              className={`flex-1 py-1.5 px-1.5 rounded-lg text-[10px] font-cinzel tracking-wider uppercase transition-all ${
-                tvTab === 'story'
-                  ? 'bg-[#d4af37] text-black font-bold shadow'
-                  : 'text-gray-300 hover:bg-white/5'
-              }`}
-            >
-              1. Terroir
-            </button>
-            <button
-              onClick={() => setTvTab('palate')}
-              className={`flex-1 py-1.5 px-1.5 rounded-lg text-[10px] font-cinzel tracking-wider uppercase transition-all ${
-                tvTab === 'palate'
-                  ? 'bg-[#d4af37] text-black font-bold shadow'
-                  : 'text-gray-300 hover:bg-white/5'
-              }`}
-            >
-              2. Palate
-            </button>
-            <button
-              onClick={() => setTvTab('food')}
-              className={`flex-1 py-1.5 px-1.5 rounded-lg text-[10px] font-cinzel tracking-wider uppercase transition-all ${
-                tvTab === 'food'
-                  ? 'bg-[#d4af37] text-black font-bold shadow'
-                  : 'text-gray-300 hover:bg-white/5'
-              }`}
-            >
-              3. Pairing
-            </button>
-          </div>
-
-          {/* TV Winery Photo Controls (hidden on the 5 S's slide which has no photo carousel) */}
-          {currentSlide.producerCode !== 'TASTE' && (
-            <div className="flex items-center gap-1 pl-1.5 border-l border-white/10 shrink-0">
-              <button
-                onClick={prevPhoto}
-                className="p-1.5 rounded-lg bg-[#1c2232] hover:bg-[#252d42] border border-white/10 text-[#fae8b4] active:scale-95"
-                title="Previous Winery Photo on TV"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={toggleLightbox}
-                className={`px-2 py-1.5 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1 border transition-all active:scale-95 ${
-                  isLightboxOpen
-                    ? 'bg-[#d4af37] text-black border-[#fae8b4]'
-                    : 'bg-[#1c2232] text-[#fae8b4] border-white/10'
-                }`}
-                title="Toggle Fullscreen Photo on TV"
-              >
-                <Maximize2 className="w-3 h-3" />
-                <span>{photoIndex + 1}/3</span>
-              </button>
-              <button
-                onClick={nextPhoto}
-                className="p-1.5 rounded-lg bg-[#1c2232] hover:bg-[#252d42] border border-white/10 text-[#fae8b4] active:scale-95"
-                title="Next Winery Photo on TV"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Main Slide Navigation Row (Previous / Flight Menu / Next Wine) */}
-        <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
+      {/* Streamlined Single-Row Footer Navigation */}
+      <footer className="shrink-0 bg-[#0e1118]/95 backdrop-blur-lg border-t border-[#232938] px-4 py-3 z-30 shadow-2xl">
+        <div className="max-w-lg mx-auto flex items-center justify-between gap-2.5">
           {/* Previous Button */}
           <button
             onClick={() => {
@@ -697,23 +543,48 @@ export const CompanionRemote: React.FC = () => {
               prevSlide();
             }}
             disabled={currentSlideIndex === 0}
-            className="flex-1 py-3 px-4 bg-[#1a202d] hover:bg-[#232b3d] disabled:opacity-30 disabled:pointer-events-none border border-white/10 text-white rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
+            className="flex-1 py-3 px-3 bg-[#1a202d] hover:bg-[#232b3d] disabled:opacity-30 disabled:pointer-events-none border border-white/10 text-white rounded-xl font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-md"
           >
-            <ChevronLeft className="w-5 h-5" />
-            <span className="text-sm">Previous</span>
+            <ChevronLeft className="w-5 h-5 text-[#d4af37]" />
+            <span className="text-xs sm:text-sm">Previous</span>
           </button>
 
-          {/* Current Slide Number Center Indicator */}
-          <div 
-            onClick={() => setShowDrawer(true)} 
-            className="px-3 py-1.5 bg-[#141824] border border-white/5 rounded-lg text-center cursor-pointer hover:border-[#d4af37]/30 transition-colors"
-          >
-            <span className="text-xs font-mono font-bold text-[#d4af37] block">
-              {currentSlideIndex + 1}/{slides.length}
-            </span>
-            <span className="text-[9px] text-gray-400 uppercase tracking-tighter">
-              Tap Menu
-            </span>
+          {/* Center Column: Slide Counter + 1-Tap TV Tab Cycle Pill */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* TV Tab Cycle Pill (Tap to cycle: Terroir -> Palate -> Pairing) */}
+            <button
+              onClick={() => {
+                const nextTab = tvTab === 'story' ? 'palate' : tvTab === 'palate' ? 'food' : 'story';
+                setTvTab(nextTab);
+              }}
+              className="px-2.5 py-2.5 bg-[#141824] border border-[#d4af37]/40 rounded-xl text-center active:scale-95 transition-all flex flex-col items-center justify-center min-w-[72px]"
+              title="Tap to cycle TV screen tab"
+            >
+              <div className="flex items-center gap-1">
+                <Monitor className="w-3 h-3 text-[#d4af37]" />
+                <span className="text-[10px] font-cinzel font-bold text-[#fae8b4] uppercase">
+                  {tvTab === 'story' ? 'Terroir' : tvTab === 'palate' ? 'Palate' : 'Pairing'}
+                </span>
+              </div>
+              <span className="text-[8px] text-gray-400 uppercase tracking-tighter">
+                Tap for TV
+              </span>
+            </button>
+
+            {/* Photo Lightbox Toggle on TV */}
+            {currentSlide.producerCode !== 'TASTE' && (
+              <button
+                onClick={toggleLightbox}
+                className={`p-2.5 rounded-xl border transition-all active:scale-95 flex items-center justify-center ${
+                  isLightboxOpen 
+                    ? 'bg-[#d4af37] text-black border-[#fae8b4]' 
+                    : 'bg-[#141824] text-[#fae8b4] border-white/10'
+                }`}
+                title="Toggle Photo on TV"
+              >
+                <Maximize2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Next Button */}
@@ -723,9 +594,9 @@ export const CompanionRemote: React.FC = () => {
               nextSlide();
             }}
             disabled={currentSlideIndex === slides.length - 1}
-            className="flex-1 py-3 px-4 bg-gradient-to-r from-[#d4af37] to-[#b39129] hover:brightness-110 disabled:opacity-30 disabled:pointer-events-none text-black rounded-xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-md"
+            className="flex-1 py-3 px-3 bg-gradient-to-r from-[#d4af37] to-[#b39129] hover:brightness-110 disabled:opacity-30 disabled:pointer-events-none text-black rounded-xl font-bold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-md"
           >
-            <span className="text-sm">Next Wine</span>
+            <span className="text-xs sm:text-sm">Next Wine</span>
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
